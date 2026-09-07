@@ -1,73 +1,74 @@
-import { useRef, useState, type ReactNode, type CSSProperties } from 'react'
-import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from 'framer-motion'
+import { useRef, useState, type ReactNode, type PointerEvent } from 'react'
+import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 
 interface TiltCardProps {
   children: ReactNode
   className?: string
-  /** Max tilt in degrees. */
-  max?: number
-  /** Add a soft pointer-tracking glare layer. */
-  glare?: boolean
-  style?: CSSProperties
+  /** Max rotation in degrees at the card edges. */
+  maxTilt?: number
+  /** CSS color of the cursor light that rides the surface. */
+  glow?: string
 }
 
 /**
- * Pointer-tracked 3D tilt. Springs keep the motion weighted; disabled on
- * touch devices and under prefers-reduced-motion (both fall through to a
- * plain wrapper).
+ * Perspective tilt + cursor light. The card leans toward the pointer on a
+ * spring (6 deg default) and a soft radial light tracks it across the face,
+ * which is what makes flat panels read as physical material. Children can
+ * lift off the surface with translateZ since the card preserves 3d.
+ *
+ * Static on touch and reduced-motion (same guard as Magnetic). The light
+ * position is written as CSS custom properties on the node directly, so
+ * pointer tracking never re-renders React.
  */
-export function TiltCard({ children, className, max = 8, glare = true, style }: TiltCardProps) {
+export function TiltCard({ children, className, maxTilt = 6, glow = 'rgba(207,23,51,0.16)' }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null)
   const reduceMotion = useReducedMotion()
-  const [enabled] = useState(() =>
-    typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches
+  const [fine] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches,
   )
-  const active = enabled && !reduceMotion
+  const active = fine && !reduceMotion
 
-  const px = useMotionValue(0.5) // pointer position, 0..1 within the card
-  const py = useMotionValue(0.5)
-  const spring = { stiffness: 220, damping: 22, mass: 0.6 }
-  const rotateX = useSpring(useTransform(py, [0, 1], [max, -max]), spring)
-  const rotateY = useSpring(useTransform(px, [0, 1], [-max, max]), spring)
-  const glareX = useTransform(px, (v) => `${v * 100}%`)
-  const glareY = useTransform(py, (v) => `${v * 100}%`)
-  const glareBg = useTransform(
-    [glareX, glareY],
-    ([x, y]: string[]) =>
-      `radial-gradient(320px circle at ${x} ${y}, rgba(255,255,255,0.14), transparent 65%)`
-  )
-  const glareOpacity = useSpring(0, { stiffness: 200, damping: 30 })
+  const rx = useMotionValue(0)
+  const ry = useMotionValue(0)
+  const srx = useSpring(rx, { stiffness: 220, damping: 20, mass: 0.6 })
+  const sry = useSpring(ry, { stiffness: 220, damping: 20, mass: 0.6 })
 
-  const onMove = (e: React.PointerEvent) => {
+  const onMove = (e: PointerEvent) => {
     if (!active || !ref.current) return
     const rect = ref.current.getBoundingClientRect()
-    px.set((e.clientX - rect.left) / rect.width)
-    py.set((e.clientY - rect.top) / rect.height)
-    if (glare) glareOpacity.set(0.5)
+    const px = (e.clientX - rect.left) / rect.width
+    const py = (e.clientY - rect.top) / rect.height
+    ry.set((px - 0.5) * 2 * maxTilt)
+    rx.set(-(py - 0.5) * 2 * maxTilt)
+    ref.current.style.setProperty('--tilt-mx', `${(px * 100).toFixed(1)}%`)
+    ref.current.style.setProperty('--tilt-my', `${(py * 100).toFixed(1)}%`)
   }
-
   const onLeave = () => {
-    px.set(0.5)
-    py.set(0.5)
-    glareOpacity.set(0)
+    rx.set(0)
+    ry.set(0)
   }
 
   return (
-    <motion.div
-      ref={ref}
-      onPointerMove={onMove}
-      onPointerLeave={onLeave}
-      style={{ rotateX: active ? rotateX : 0, rotateY: active ? rotateY : 0, transformPerspective: 900, ...style }}
-      className={className}
-    >
-      {children}
-      {glare && active && (
-        <motion.div
+    <div style={{ perspective: 1200 }} className="h-full">
+      <motion.div
+        ref={ref}
+        onPointerMove={onMove}
+        onPointerLeave={onLeave}
+        style={{
+          ...(active ? { rotateX: srx, rotateY: sry } : null),
+          transformStyle: 'preserve-3d',
+        }}
+        className={`group relative h-full ${className ?? ''}`}
+      >
+        {children}
+        <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-20 rounded-[inherit]"
-          style={{ opacity: glareOpacity, background: glareBg }}
+          className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{
+            background: `radial-gradient(480px circle at var(--tilt-mx, 50%) var(--tilt-my, 50%), ${glow}, transparent 65%)`,
+          }}
         />
-      )}
-    </motion.div>
+      </motion.div>
+    </div>
   )
 }
