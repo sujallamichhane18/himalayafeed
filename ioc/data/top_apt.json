@@ -1,40 +1,8 @@
 {
- "generated_at": "2026-09-07T02:22:51+00:00",
+ "generated_at": "2026-09-07T10:21:22+00:00",
  "source": "AlienVault OTX pulse search",
  "note": "Activity = threat-intel pulses (campaign reports) mentioning the group in the window. Vendor/community reporting \u2014 follow each link to its source.",
  "actors": [
-  {
-   "name": "Gamaredon",
-   "aka": [
-    "Primitive Bear",
-    "ShallowBurrow"
-   ],
-   "sponsor": "Russia (GRU)",
-   "pulses_24h": 1,
-   "pulses_7d": 3,
-   "malware": [],
-   "targets": [],
-   "campaigns": [
-    {
-     "title": "Gamaredon WinRAR exploitation wave, Dec 2025 - Jun 2026 (Ukraine)",
-     "url": "https://otx.alienvault.com/pulse/6a9d2b755df4bc6aee56e0bc",
-     "modified": "2026-09-06T09:02:39.160000",
-     "last_24h": true
-    },
-    {
-     "title": "Gamaredon",
-     "url": "https://otx.alienvault.com/pulse/6a994fe048ebef77e51310af",
-     "modified": "2026-09-03T10:45:52.024000",
-     "last_24h": false
-    },
-    {
-     "title": "Gamaredon",
-     "url": "https://otx.alienvault.com/pulse/6a955ef277b0404ca4ed2856",
-     "modified": "2026-08-31T11:01:06.712000",
-     "last_24h": false
-    }
-   ]
-  },
   {
    "name": "Kimsuky",
    "aka": [
@@ -96,6 +64,49 @@
    ]
   },
   {
+   "name": "Lazarus Group",
+   "aka": [
+    "Lazarus",
+    "APT38",
+    "Hidden Cobra",
+    "BlueNoroff"
+   ],
+   "sponsor": "North Korea",
+   "pulses_24h": 1,
+   "pulses_7d": 1,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors. | Lazarus",
+     "url": "https://otx.alienvault.com/pulse/6a9db5ef43636929696eac66",
+     "modified": "2026-09-06T18:50:23.858000",
+     "last_24h": true
+    }
+   ]
+  },
+  {
+   "name": "APT37",
+   "aka": [
+    "Reaper",
+    "Richochet",
+    "Group123"
+   ],
+   "sponsor": "North Korea",
+   "pulses_24h": 1,
+   "pulses_7d": 1,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors",
+     "url": "https://otx.alienvault.com/pulse/6a9af7a5158ae188847551b5",
+     "modified": "2026-09-07T10:18:49.336000",
+     "last_24h": true
+    }
+   ]
+  },
+  {
    "name": "Turla",
    "aka": [
     "Dragonfly",
@@ -117,24 +128,34 @@
    ]
   },
   {
-   "name": "Lazarus Group",
+   "name": "Gamaredon",
    "aka": [
-    "Lazarus",
-    "APT38",
-    "Hidden Cobra",
-    "BlueNoroff"
+    "Primitive Bear",
+    "ShallowBurrow"
    ],
-   "sponsor": "North Korea",
-   "pulses_24h": 1,
-   "pulses_7d": 1,
+   "sponsor": "Russia (GRU)",
+   "pulses_24h": 0,
+   "pulses_7d": 3,
    "malware": [],
    "targets": [],
    "campaigns": [
     {
-     "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors. | Lazarus",
-     "url": "https://otx.alienvault.com/pulse/6a9db5ef43636929696eac66",
-     "modified": "2026-09-06T18:50:23.858000",
-     "last_24h": true
+     "title": "Gamaredon WinRAR exploitation wave, Dec 2025 - Jun 2026 (Ukraine)",
+     "url": "https://otx.alienvault.com/pulse/6a9d2b755df4bc6aee56e0bc",
+     "modified": "2026-09-06T09:02:39.160000",
+     "last_24h": false
+    },
+    {
+     "title": "Gamaredon",
+     "url": "https://otx.alienvault.com/pulse/6a994fe048ebef77e51310af",
+     "modified": "2026-09-03T10:45:52.024000",
+     "last_24h": false
+    },
+    {
+     "title": "Gamaredon",
+     "url": "https://otx.alienvault.com/pulse/6a955ef277b0404ca4ed2856",
+     "modified": "2026-08-31T11:01:06.712000",
+     "last_24h": false
     }
    ]
   },
