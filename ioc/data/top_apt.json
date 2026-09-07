@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-07T10:21:22+00:00",
+ "generated_at": "2026-09-07T18:20:21+00:00",
  "source": "AlienVault OTX pulse search",
  "note": "Activity = threat-intel pulses (campaign reports) mentioning the group in the window. Vendor/community reporting \u2014 follow each link to its source.",
  "actors": [
@@ -17,21 +17,21 @@
    "targets": [],
    "campaigns": [
     {
+     "title": "Kimsuky Uses the AI Agent 'opencode' to Create Decoys as Its GitHub PAT-Based LNK Attacks Evolve",
+     "url": "https://otx.alienvault.com/pulse/6a9e70fd7eb74853a795cc57",
+     "modified": "2026-09-07T15:41:31.543000",
+     "last_24h": true
+    },
+    {
      "title": "Kimsuky",
      "url": "https://otx.alienvault.com/pulse/6a9d88dac8a6f5b2b55a6bcc",
      "modified": "2026-09-06T15:44:27.322000",
-     "last_24h": true
+     "last_24h": false
     },
     {
      "title": "Kimsuky",
      "url": "https://otx.alienvault.com/pulse/6a99fba08b6192c30cef4565",
      "modified": "2026-09-03T22:58:40.443000",
-     "last_24h": false
-    },
-    {
-     "title": "Attack Cases by the Kimsuky Group Impersonating Diplomats (PebbleDash, PrxClient) [ASEC]",
-     "url": "https://otx.alienvault.com/pulse/6a6ddf60ba600f68903d963e",
-     "modified": "2026-08-31T11:10:33.436000",
      "last_24h": false
     }
    ]
@@ -135,7 +135,7 @@
    ],
    "sponsor": "Russia (GRU)",
    "pulses_24h": 0,
-   "pulses_7d": 3,
+   "pulses_7d": 2,
    "malware": [],
    "targets": [],
    "campaigns": [
@@ -149,12 +149,6 @@
      "title": "Gamaredon",
      "url": "https://otx.alienvault.com/pulse/6a994fe048ebef77e51310af",
      "modified": "2026-09-03T10:45:52.024000",
-     "last_24h": false
-    },
-    {
-     "title": "Gamaredon",
-     "url": "https://otx.alienvault.com/pulse/6a955ef277b0404ca4ed2856",
-     "modified": "2026-08-31T11:01:06.712000",
      "last_24h": false
     }
    ]
