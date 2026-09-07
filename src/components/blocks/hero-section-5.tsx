@@ -91,18 +91,19 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
     }
   }, [pulse, reducedMotion])
 
-  // First visit of the session: prefill the bar with YOUR public IP
-  // (/api/whoami echoes CF-Connecting-IP back to you and you alone). Prefill
-  // only — no scan; the analyst decides whether to hunt themselves. Never
-  // clobbers a value already present (typed, or a ?search= deep link).
+  // First visit of the session: surface YOUR public IP (/api/whoami echoes
+  // CF-Connecting-IP back to you and you alone) as a dim placeholder, NOT a
+  // typed value — it reads as quiet helper text, can't be backspaced, and
+  // disappears the moment you type. An empty Hunt/Enter still scans it.
+  const [hintIp, setHintIp] = useState('')
   useEffect(() => {
     if (sessionStorage.getItem('tb:ip_prefill')) return
     sessionStorage.setItem('tb:ip_prefill', '1')
     let cancelled = false
     fetch(`${import.meta.env.BASE_URL}api/whoami`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((d: any) => { if (!cancelled && d?.ip) setScanInput((prev: string) => prev || d.ip) })
-      .catch(() => { /* offline / dev without functions: bar just stays empty */ })
+      .then((d: any) => { if (!cancelled && d?.ip) setHintIp(d.ip) })
+      .catch(() => { /* offline / dev without functions: normal placeholder remains */ })
     return () => { cancelled = true }
   }, [])
 
@@ -183,15 +184,15 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
                 ref={inputRef}
                 type="text"
                 aria-label="Hunt an IP, domain, URL, or hash"
-                placeholder="Enter IP, domain, URL, or hash…"
-                className={`hero-scan-input relative h-14 md:h-16 w-full rounded-full border bg-slate-950/70 backdrop-blur-xl pl-12 md:pl-14 pr-28 md:pr-32 text-base text-white placeholder:text-slate-400 focus-visible:outline-none transition-all shadow-[0_8px_30px_-12px_rgba(0,0,0,0.8)] ${
+                placeholder={hintIp ? `Your IP: ${hintIp}` : 'Enter IP, domain, URL, or hash…'}
+                className={`hero-scan-input relative h-14 md:h-16 w-full rounded-full border bg-slate-950/70 backdrop-blur-xl pl-12 md:pl-14 pr-28 md:pr-32 text-base text-white placeholder:text-slate-500 focus-visible:outline-none transition-all shadow-[0_8px_30px_-12px_rgba(0,0,0,0.8)] ${
                   invalid
                     ? 'border-red-500/60 focus-visible:border-red-500/60 focus-visible:ring-2 focus-visible:ring-red-500/30'
                     : 'border-white/10 focus-visible:border-red-500/50 focus-visible:ring-2 focus-visible:ring-red-500/30'
                 }`}
                 value={scanInput}
                 onChange={(e) => setScanInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleScan()}
+                onKeyDown={(e) => e.key === 'Enter' && handleScan(scanInput.trim() ? undefined : hintIp || undefined)}
               />
               {/* Live type badge — the console repeats back what it understood. */}
               <AnimatePresence mode="popLayout" initial={false}>
@@ -242,7 +243,7 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
                 className={`absolute z-10 right-2 top-2 bottom-2 inline-flex items-center justify-center overflow-hidden rounded-full px-7 sm:px-9 bg-red-500 hover:bg-red-400 text-white text-base font-semibold shadow-glow-red transition-all duration-200 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50 hover:shadow-[0_0_28px_rgba(207,23,51,0.55)] disabled:cursor-default disabled:hover:bg-red-500 ${
                   pulse && reducedMotion ? (pulse.kind === 'dirty' ? 'ring-2 ring-red-500/70' : 'ring-2 ring-white/30') : ''
                 }`}
-                onClick={() => handleScan()}
+                onClick={() => handleScan(scanInput.trim() ? undefined : hintIp || undefined)}
               >
                 {/* The button IS the progress bar: while in flight, a sweep of
                     the hero's own scan-line plays inside it (one shot, looping
