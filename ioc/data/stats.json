@@ -1,153 +1,153 @@
 {
-  "total_unique_ips": 927122,
-  "total_unique_ipv6": 15966,
+  "total_unique_ips": 932259,
+  "total_unique_ipv6": 16008,
   "total_unique_cidrs": 21147,
-  "total_unique_domains": 3511802,
-  "total_unique_hashes": 1133709,
-  "total_unique_urls": 123538,
-  "active_feeds": 54,
+  "total_unique_domains": 3512104,
+  "total_unique_hashes": 1133847,
+  "total_unique_urls": 123896,
+  "active_feeds": 55,
   "category_counts": {
-    "Mixed": 706254,
-    "Malicious": 180119,
-    "Brute-Force": 26245,
-    "Spam": 13698,
-    "Botnet": 2396,
+    "Mixed": 710536,
+    "Malicious": 186895,
+    "Brute-Force": 26798,
+    "Spam": 13692,
+    "Botnet": 2365,
     "Malware": 2728,
-    "Tor": 6814,
+    "Tor": 6837,
     "C2": 7607,
-    "Compromised": 15548,
-    "Exploit": 9605
+    "Compromised": 15538,
+    "Exploit": 9640
   },
   "ip_category_files": {
-    "threatbase-ip-botnet.txt": 2396,
-    "threatbase-ip-bruteforce.txt": 26245,
+    "threatbase-ip-botnet.txt": 2365,
+    "threatbase-ip-bruteforce.txt": 26798,
     "threatbase-ip-c2.txt": 7607,
-    "threatbase-ip-compromised.txt": 15548,
-    "threatbase-ip-exploit.txt": 9605,
-    "threatbase-ip-malicious.txt": 180119,
+    "threatbase-ip-compromised.txt": 15538,
+    "threatbase-ip-exploit.txt": 9640,
+    "threatbase-ip-malicious.txt": 186895,
     "threatbase-ip-malware.txt": 2728,
-    "threatbase-ip-mixed.txt": 706254,
-    "threatbase-ip-spam.txt": 13698,
-    "threatbase-ip-tor.txt": 6814
+    "threatbase-ip-mixed.txt": 710536,
+    "threatbase-ip-spam.txt": 13692,
+    "threatbase-ip-tor.txt": 6837
   },
   "ip_format_files": {
-    "ip-plain.txt": 927122,
-    "ip-multisource.txt": 304014,
+    "ip-plain.txt": 932259,
+    "ip-multisource.txt": 300345,
     "ip-top50k.txt": 50000,
-    "ip.ipset": 927122,
-    "ip-suricata.rules": 99807,
-    "ip.jsonl.gz": 927122
+    "ip.ipset": 932259,
+    "ip-suricata.rules": 100843,
+    "ip.jsonl.gz": 932259
   },
   "ip_category_format_files": {
     "botnet": {
-      "ip-plain.txt": 2396,
-      "ip-multisource.txt": 2395,
-      "ip-top50k.txt": 2396,
-      "ip.ipset": 2396,
-      "ip-suricata.rules": 2275,
-      "ip.jsonl.gz": 2396
+      "ip-plain.txt": 2365,
+      "ip-multisource.txt": 2365,
+      "ip-top50k.txt": 2365,
+      "ip.ipset": 2365,
+      "ip-suricata.rules": 2354,
+      "ip.jsonl.gz": 2365
     },
     "bruteforce": {
-      "ip-plain.txt": 26245,
-      "ip-multisource.txt": 26228,
-      "ip-top50k.txt": 26245,
-      "ip.ipset": 26245,
-      "ip-suricata.rules": 25832,
-      "ip.jsonl.gz": 26245
+      "ip-plain.txt": 26798,
+      "ip-multisource.txt": 26788,
+      "ip-top50k.txt": 26798,
+      "ip.ipset": 26798,
+      "ip-suricata.rules": 26651,
+      "ip.jsonl.gz": 26798
     },
     "c2": {
       "ip-plain.txt": 7607,
       "ip-multisource.txt": 7607,
       "ip-top50k.txt": 7607,
       "ip.ipset": 7607,
-      "ip-suricata.rules": 212,
+      "ip-suricata.rules": 211,
       "ip.jsonl.gz": 7607
     },
     "compromised": {
-      "ip-plain.txt": 15548,
-      "ip-multisource.txt": 15087,
-      "ip-top50k.txt": 15548,
-      "ip.ipset": 15548,
-      "ip-suricata.rules": 14143,
-      "ip.jsonl.gz": 15548
+      "ip-plain.txt": 15538,
+      "ip-multisource.txt": 15348,
+      "ip-top50k.txt": 15538,
+      "ip.ipset": 15538,
+      "ip-suricata.rules": 14694,
+      "ip.jsonl.gz": 15538
     },
     "exploit": {
-      "ip-plain.txt": 9605,
-      "ip-multisource.txt": 9602,
-      "ip-top50k.txt": 9605,
-      "ip.ipset": 9605,
-      "ip-suricata.rules": 9525,
-      "ip.jsonl.gz": 9605
+      "ip-plain.txt": 9640,
+      "ip-multisource.txt": 9635,
+      "ip-top50k.txt": 9640,
+      "ip.ipset": 9640,
+      "ip-suricata.rules": 9611,
+      "ip.jsonl.gz": 9640
     },
     "malicious": {
-      "ip-plain.txt": 180119,
-      "ip-multisource.txt": 180097,
+      "ip-plain.txt": 186895,
+      "ip-multisource.txt": 185948,
       "ip-top50k.txt": 50000,
-      "ip.ipset": 180119,
-      "ip-suricata.rules": 68020,
-      "ip.jsonl.gz": 180119
+      "ip.ipset": 186895,
+      "ip-suricata.rules": 74414,
+      "ip.jsonl.gz": 186895
     },
     "malware": {
       "ip-plain.txt": 2728,
       "ip-multisource.txt": 2728,
       "ip-top50k.txt": 2728,
       "ip.ipset": 2728,
-      "ip-suricata.rules": 87,
+      "ip-suricata.rules": 83,
       "ip.jsonl.gz": 2728
     },
     "mixed": {
-      "ip-plain.txt": 706254,
-      "ip-multisource.txt": 83666,
+      "ip-plain.txt": 710536,
+      "ip-multisource.txt": 79800,
       "ip-top50k.txt": 50000,
-      "ip.ipset": 706254,
-      "ip-suricata.rules": 2974,
-      "ip.jsonl.gz": 706254
+      "ip.ipset": 710536,
+      "ip-suricata.rules": 2729,
+      "ip.jsonl.gz": 710536
     },
     "spam": {
-      "ip-plain.txt": 13698,
-      "ip-multisource.txt": 13698,
-      "ip-top50k.txt": 13698,
-      "ip.ipset": 13698,
-      "ip-suricata.rules": 13661,
-      "ip.jsonl.gz": 13698
+      "ip-plain.txt": 13692,
+      "ip-multisource.txt": 13692,
+      "ip-top50k.txt": 13692,
+      "ip.ipset": 13692,
+      "ip-suricata.rules": 13679,
+      "ip.jsonl.gz": 13692
     },
     "tor": {
-      "ip-plain.txt": 6814,
-      "ip-multisource.txt": 6798,
-      "ip-top50k.txt": 6814,
-      "ip.ipset": 6814,
-      "ip-suricata.rules": 6743,
-      "ip.jsonl.gz": 6814
+      "ip-plain.txt": 6837,
+      "ip-multisource.txt": 6811,
+      "ip-top50k.txt": 6837,
+      "ip.ipset": 6837,
+      "ip-suricata.rules": 6741,
+      "ip.jsonl.gz": 6837
     }
   },
   "stix_collection_counts": {
-    "ip-botnet": 2396,
-    "ip-bruteforce": 26245,
+    "ip-botnet": 2365,
+    "ip-bruteforce": 26798,
     "ip-c2": 7607,
-    "ip-compromised": 15548,
-    "ip-exploit": 9605,
-    "ip-malicious": 180119,
+    "ip-compromised": 15538,
+    "ip-exploit": 9640,
+    "ip-malicious": 186895,
     "ip-malware": 2728,
-    "ip-mixed": 706254,
-    "ip-spam": 13698,
-    "ip-tor": 6814,
-    "ip": 927122,
-    "domains": 3511802,
-    "hashes": 1133709,
-    "urls": 123538,
-    "ipv6": 15966,
+    "ip-mixed": 710536,
+    "ip-spam": 13692,
+    "ip-tor": 6837,
+    "ip": 932259,
+    "domains": 3512104,
+    "hashes": 1133847,
+    "urls": 123896,
+    "ipv6": 16008,
     "cidrs": 21147
   },
   "top_sources": {
-    "ipsum": 135242,
+    "ipsum": 132013,
     "romainmarcoux_outgoing_aa": 131072,
-    "romainmarcoux_outgoing_ab": 48553,
+    "romainmarcoux_outgoing_ab": 50326,
     "romainmarcoux_outgoing_40k": 40000,
-    "blocklist_de": 23338
+    "blocklist_de": 23416
   },
-  "last_updated": "2026-09-06T18:23:03.830536+00:00",
+  "last_updated": "2026-09-07T02:22:48.337778+00:00",
   "stale_indicators": 0,
-  "avg_freshness_days": 2.5,
+  "avg_freshness_days": 3.2,
   "decay_config": {
     "half_life_days": 90,
     "stale_threshold_days": 365
@@ -178,39 +178,39 @@
       {
         "file": "domain/threatbase-domain-01.txt",
         "first": "0--4.com,2026-09-05",
-        "last": "games-store-app.net,2026-09-02",
-        "lines": 1184136,
-        "bytes": 36042770
+        "last": "games-redeem-codes-generator.com,2026-09-02",
+        "lines": 1184242,
+        "bytes": 36046200
       },
       {
         "file": "domain/threatbase-domain-02.txt",
-        "first": "games-store.biz,2026-09-02",
-        "last": "setupad.com,2026-09-05",
-        "lines": 1194849,
-        "bytes": 36042768
+        "first": "games-roblox.com,2026-09-02",
+        "last": "setupadvancedintenselythe-file.top,2026-09-02",
+        "lines": 1194956,
+        "bytes": 36046187
       },
       {
         "file": "domain/threatbase-domain-03.txt",
-        "first": "setupad.io,2026-09-05",
+        "first": "setupadvancedmostthe-file.top,2026-09-02",
         "last": "zzzzzzzzzzzzz.com,2026-09-02",
-        "lines": 1132817,
-        "bytes": 36042736
+        "lines": 1132906,
+        "bytes": 36046163
       }
     ],
     "threatbase-hash.txt": [
       {
         "file": "hash/threatbase-hash-01.txt",
         "first": "00000077553a5b27a610ac98f29563bbd6e0decc020c2d49e4fa0d89197e7fd8,2026-09-02",
-        "last": "7fbd00dba356cd0fa0610de89db477ae42416d2540c92ae4f0f8cf9c00cfacce,2026-09-02",
-        "lines": 566855,
-        "bytes": 43080980
+        "last": "7fbc6c79023b201e10a11320ab7b6ec559ef2fcc09195c6d78af88795effdab5,2026-09-02",
+        "lines": 566924,
+        "bytes": 43086224
       },
       {
         "file": "hash/threatbase-hash-02.txt",
-        "first": "7fbd0cc5432a5878f5e489087c0ab45844f2d7e7aaa4d8a925a8c08cc2f0a9e0,2026-09-02",
+        "first": "7fbc7d878232d85647450251e8ed14fe505adb81b9877ac475bfe567a2b669f0,2026-09-02",
         "last": "ffffe8b36158ae710a9fbf0941f83625ae69f9f2070b3b04def6171b890a6dde,2026-09-02",
-        "lines": 566854,
-        "bytes": 43080904
+        "lines": 566923,
+        "bytes": 43086148
       }
     ]
   },

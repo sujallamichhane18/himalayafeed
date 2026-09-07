@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-06T18:23:07+00:00",
+ "generated_at": "2026-09-07T02:22:51+00:00",
  "source": "AlienVault OTX pulse search",
  "note": "Activity = threat-intel pulses (campaign reports) mentioning the group in the window. Vendor/community reporting \u2014 follow each link to its source.",
  "actors": [
@@ -77,14 +77,63 @@
    ],
    "sponsor": "Iran (MOIS)",
    "pulses_24h": 1,
+   "pulses_7d": 2,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "MuddyWater",
+     "url": "https://otx.alienvault.com/pulse/6a9df716c99dc7887aeb68d9",
+     "modified": "2026-09-06T23:28:22.020000",
+     "last_24h": true
+    },
+    {
+     "title": "MuddyWater: ClickFix to Telegram & PatchAgent Backdoor.",
+     "url": "https://otx.alienvault.com/pulse/6a74ede416b1c9caa200b99e",
+     "modified": "2026-09-05T20:01:02.113000",
+     "last_24h": false
+    }
+   ]
+  },
+  {
+   "name": "Turla",
+   "aka": [
+    "Dragonfly",
+    "CRONY",
+    "Uroburos"
+   ],
+   "sponsor": "Russia",
+   "pulses_24h": 1,
    "pulses_7d": 1,
    "malware": [],
    "targets": [],
    "campaigns": [
     {
-     "title": "MuddyWater: ClickFix to Telegram & PatchAgent Backdoor.",
-     "url": "https://otx.alienvault.com/pulse/6a74ede416b1c9caa200b99e",
-     "modified": "2026-09-05T20:01:02.113000",
+     "title": "Turla",
+     "url": "https://otx.alienvault.com/pulse/6a9dd822e0b521d84f4536d1",
+     "modified": "2026-09-06T21:16:18.532000",
+     "last_24h": true
+    }
+   ]
+  },
+  {
+   "name": "Lazarus Group",
+   "aka": [
+    "Lazarus",
+    "APT38",
+    "Hidden Cobra",
+    "BlueNoroff"
+   ],
+   "sponsor": "North Korea",
+   "pulses_24h": 1,
+   "pulses_7d": 1,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors. | Lazarus",
+     "url": "https://otx.alienvault.com/pulse/6a9db5ef43636929696eac66",
+     "modified": "2026-09-06T18:50:23.858000",
      "last_24h": true
     }
    ]
