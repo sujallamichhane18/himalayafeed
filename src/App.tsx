@@ -122,17 +122,22 @@ export default function App() {
     performScan(raw)
   }, [scanInput, addToast, isScanning])
 
-  const performScan = useCallback(async (inputOverride?: string) => {
+  const performScan = useCallback(async (inputOverride?: string, opts?: { scrollIntoView?: boolean }) => {
     const raw = (inputOverride ?? scanInput).trim().replace(/[<>"'&]/g, '')
-    
+
     setIsScanning(true)
     setShowReport(true)
     setScanResult(null)
 
-    setTimeout(() => {
-      const section = document.getElementById('report-section')
-      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }, 50)
+    // Interactive hunts load the report in place (ghost loader below the bar
+    // — no page yank). Deep-link arrivals are the exception: the visitor
+    // clicked to SEE a verdict, so bring it into view.
+    if (opts?.scrollIntoView) {
+      setTimeout(() => {
+        const section = document.getElementById('report-section')
+        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 50)
+    }
 
     // statsData is passed through so the scanner can resolve the chunk layout of
     // the large domain/hash feeds without re-fetching stats.json.
@@ -194,7 +199,7 @@ export default function App() {
     if (!searchParam || searchParam === lastAutoScan.current) return
     lastAutoScan.current = searchParam
     setScanInput(searchParam)
-    performScan(searchParam)
+    performScan(searchParam, { scrollIntoView: true })
   }, [location, isHumanVerified, performScan])
 
   // Scroll to hash on page load or navigation. Routes are lazy chunks behind

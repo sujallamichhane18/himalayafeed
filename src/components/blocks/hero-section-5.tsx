@@ -276,7 +276,7 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
             </div>
 
             {recent.length > 0 && (
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+              <div className="mt-3 flex flex-wrap items-center justify-start gap-2">
                 <span className="text-xs font-medium tracking-wide text-slate-500 mr-1">Recent:</span>
                 {recent.map((r) => (
                   <span key={r.value} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] transition-colors hover:bg-white/[0.08]">
@@ -309,7 +309,7 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.9, ease: EASE_EXPO }}
-              className="mt-6 flex flex-wrap items-center justify-center gap-2"
+              className="mt-3 flex flex-wrap items-center justify-start gap-2"
             >
               <span className="text-xs font-medium tracking-wide text-slate-400 mr-1">Try:</span>
               {EXAMPLES.map((ex) => (
