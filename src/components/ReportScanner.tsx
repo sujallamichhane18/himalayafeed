@@ -655,7 +655,7 @@ export default function ReportScanner({ scanResult, isScanning, showReport, scan
           {isScanning ? (
             <motion.div
               key="scanning"
-              className="w-full min-h-[320px] flex flex-col items-center justify-center p-8 relative"
+              className="w-full min-h-[55dvh] flex flex-col items-center justify-center p-8 relative"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.98 }}
