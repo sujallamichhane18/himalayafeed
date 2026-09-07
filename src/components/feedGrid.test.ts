@@ -3,32 +3,29 @@ import { feeds } from './Feeds'
 import { DATA_RAMP, INDICATOR_ACCENT } from '../utils'
 
 /**
- * The feed bento is hand-tiled: each card declares a `lg:col-span-N` out of 6.
- * If the spans stop packing into full rows the desktop grid grows a visible
- * hole, which is the kind of break nobody notices until it ships.
+ * Every manifest row quotes the size of the file it links to, read out of
+ * stats.json by `statKey`. A typo there renders a blank count instead of a
+ * number, silently, so the keys are pinned to the ones stats.json publishes.
  */
-describe('feed bento spans', () => {
-  const spans = feeds.map((f) => Number(f.span.replace('lg:col-span-', '')))
+describe('feed manifest rows', () => {
+  const STAT_KEYS = [
+    'total_unique_ips',
+    'total_unique_domains',
+    'total_unique_hashes',
+    'total_unique_urls',
+    'total_unique_ipv6',
+    'total_unique_cidrs',
+  ]
 
-  it('declares a span between 1 and 6 for every feed', () => {
-    expect(spans).toHaveLength(feeds.length)
-    for (const s of spans) {
-      expect(Number.isInteger(s)).toBe(true)
-      expect(s).toBeGreaterThanOrEqual(1)
-      expect(s).toBeLessThanOrEqual(6)
+  it('points every row at a published stats key', () => {
+    for (const f of feeds) {
+      expect(STAT_KEYS).toContain(f.statKey)
     }
   })
 
-  it('packs into complete 6-column rows with no gaps', () => {
-    let row = 0
-    for (const s of spans) {
-      row += s
-      // A card may never straddle a row boundary, or the grid reflows it and
-      // leaves the previous row short.
-      expect(row).toBeLessThanOrEqual(6)
-      if (row === 6) row = 0
-    }
-    expect(row).toBe(0) // last row closed out
+  it('lists each file and each stats key once', () => {
+    expect(new Set(feeds.map((f) => f.file)).size).toBe(feeds.length)
+    expect(new Set(feeds.map((f) => f.statKey)).size).toBe(feeds.length)
   })
 })
 

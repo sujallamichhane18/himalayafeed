@@ -152,7 +152,7 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 w-full pt-24 pb-20 lg:pb-28"
       >
-        <div className="relative mx-auto flex max-w-3xl flex-col items-center px-6 text-center">
+        <div className="relative mx-auto flex max-w-4xl flex-col items-center px-6 text-center">
           <h1 className="text-balance font-display text-4xl leading-[1.06] sm:text-5xl md:text-6xl font-bold tracking-tight text-white">
             <RevealWords text="Hunt" delay={0.15} />{' '}
             <span className="text-red-500">
@@ -174,18 +174,22 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.7, ease: EASE_EXPO }}
-            className="mt-10 w-full max-w-2xl"
+            className="mt-10 w-full max-w-3xl"
           >
             <div className="relative w-full flex items-center group/search">
               {/* Ruby glow behind the bar on focus */}
               <div className="absolute -inset-3 rounded-[2rem] bg-red-500/10 blur-2xl opacity-0 group-focus-within/search:opacity-100 transition-opacity duration-300 pointer-events-none" />
               <Search className="absolute left-5 md:left-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" size={20} />
+              {/* Input right padding reserves the Hunt button AND the type badge
+                  that sits at right-[8.75rem]/[9.75rem]: it must stay >= that
+                  offset plus the widest badge ("DEFANGED", ~5.5rem), or a long
+                  hash scrolls underneath the badge instead of clipping first. */}
               <input
                 ref={inputRef}
                 type="text"
                 aria-label="Hunt an IP, domain, URL, or hash"
                 placeholder={hintIp ? `Your IP: ${hintIp}` : 'Enter IP, domain, URL, or hash…'}
-                className={`hero-scan-input relative h-14 md:h-16 w-full rounded-full border bg-slate-950/70 backdrop-blur-xl pl-12 md:pl-14 pr-28 md:pr-32 text-base text-white placeholder:text-slate-500 focus-visible:outline-none transition-all shadow-[0_8px_30px_-12px_rgba(0,0,0,0.8)] ${
+                className={`hero-scan-input relative h-14 md:h-16 w-full rounded-full border bg-slate-950/70 backdrop-blur-xl pl-12 md:pl-14 pr-[14.5rem] md:pr-[15.5rem] text-base text-white placeholder:text-slate-500 focus-visible:outline-none transition-all shadow-[0_8px_30px_-12px_rgba(0,0,0,0.8)] ${
                   invalid
                     ? 'border-red-500/60 focus-visible:border-red-500/60 focus-visible:ring-2 focus-visible:ring-red-500/30'
                     : 'border-white/10 focus-visible:border-red-500/50 focus-visible:ring-2 focus-visible:ring-red-500/30'

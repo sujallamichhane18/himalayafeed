@@ -110,6 +110,20 @@ function RepoPulse() {
  */
 const IMPROVEMENTS: { date: string; title: string; items: string[] }[] = [
   {
+    date: '2026-09-07',
+    title: 'Scan Report, Feed Manifest & Geo Lookup',
+    items: [
+      'Every hunt scrolls to the report card and lands on the verdict, both from the homepage console and from ?search= deep links.',
+      'IP location, ISP, and ASN resolve through our own Cloudflare function, which asks a provider with wider city coverage first and falls back to GeoJS. Repeat lookups of an address are served from the edge cache, and the third-party geo host is off the site allowlist.',
+      'Registration data (RDAP) is proxied through the site, so whois lookups answer in the browser instead of dying on a cross-origin redirect.',
+      'Database totals rebuilt as a coverage ledger: one headline count, one composition bar, and the share each indicator type holds.',
+      'Feed downloads are a release manifest now, one row per file with its line count, filename, and chunk layout.',
+      'How it works is the build pipeline drawn as a diagram, from collect to consume, with each stage showing the work it does.',
+      'Scan bar widened so a full SHA-256 no longer runs under the type badge.',
+      'Duplicate database and feed panels removed from the scan page. The homepage is the console, /threatfeed carries the data.',
+    ],
+  },
+  {
     date: '2026-09-05',
     title: 'Hunt Console, Threat Feed & Scan Report',
     items: [

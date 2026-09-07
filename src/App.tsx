@@ -26,11 +26,30 @@ const TopAptPage = lazy(() => import('./components/TopAptPage'))
 const ApiDocsPage = lazy(() => import('./components/ApiDocsPage'))
 const PricingPage = lazy(() => import('./components/PricingPage'))
 const ThreatFeedPage = lazy(() => import('./components/ThreatFeedPage'))
+// Home's below-the-fold band (feed destinations, Pro). Split out so the hero
+// console is not held up by it.
+const HomeSections = lazy(() => import('./components/blocks/LandingSections'))
 import { AuthProvider } from './AuthContext'
 import { getBaseUrl, formatSyncTime, feedPath } from './utils'
 import { scanIndicatorLogic, classifyIndicator } from './scanner'
 import { useSEO } from './useSEO'
 import InitialVerification from './components/InitialVerification'
+
+/**
+ * Programmatic smooth scroll that survives Lenis.
+ *
+ * Lenis rewrites the window scroll position from its own RAF loop, so a native
+ * `scrollIntoView({behavior:'smooth'})` gets overwritten every frame and the
+ * page barely moves. Offer the scroll to Lenis first (SmoothScroll claims the
+ * event with preventDefault) and only do it ourselves when nothing answers,
+ * which is the reduced-motion case where Lenis is never installed.
+ */
+function smoothScrollTo(el: Element, offset = -96) {
+  const claimed = !window.dispatchEvent(
+    new CustomEvent('tb:route-scroll', { detail: { scrollTo: el, offset }, cancelable: true })
+  )
+  if (!claimed) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 /** Homepage-only SEO. Scoped to the index route so it never overrides subpage meta. */
 function HomeSeo() {
@@ -122,22 +141,22 @@ export default function App() {
     performScan(raw)
   }, [scanInput, addToast, isScanning])
 
-  const performScan = useCallback(async (inputOverride?: string, opts?: { scrollIntoView?: boolean }) => {
+  const performScan = useCallback(async (inputOverride?: string) => {
     const raw = (inputOverride ?? scanInput).trim().replace(/[<>"'&]/g, '')
 
     setIsScanning(true)
     setShowReport(true)
     setScanResult(null)
 
-    // Interactive hunts load the report in place (ghost loader below the bar
-    // — no page yank). Deep-link arrivals are the exception: the visitor
-    // clicked to SEE a verdict, so bring it into view.
-    if (opts?.scrollIntoView) {
-      setTimeout(() => {
-        const section = document.getElementById('report-section')
-        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }, 50)
-    }
+    // Every scan brings the report into view, clean or malicious: the visitor
+    // hit Hunt to SEE a verdict. Fires on the ghost loader rather than when the
+    // result lands, so there is no second jump under the reader. `block:start`
+    // (not center) because the finished report is taller than the viewport, and
+    // centering it puts the verdict itself above the fold.
+    setTimeout(() => {
+      const section = document.getElementById('report-section')
+      if (section) smoothScrollTo(section)
+    }, 50)
 
     // statsData is passed through so the scanner can resolve the chunk layout of
     // the large domain/hash feeds without re-fetching stats.json.
@@ -199,7 +218,7 @@ export default function App() {
     if (!searchParam || searchParam === lastAutoScan.current) return
     lastAutoScan.current = searchParam
     setScanInput(searchParam)
-    performScan(searchParam, { scrollIntoView: true })
+    performScan(searchParam)
   }, [location, isHumanVerified, performScan])
 
   // Scroll to hash on page load or navigation. Routes are lazy chunks behind
@@ -215,7 +234,7 @@ export default function App() {
         if (Date.now() > deadline) return clearInterval(timer)
         if (element) {
           clearInterval(timer)
-          element.scrollIntoView({ behavior: 'smooth' })
+          smoothScrollTo(element)
         }
       }, 100)
       return () => clearInterval(timer)
@@ -257,9 +276,11 @@ export default function App() {
               addToast={addToast}
             />
 
-            {/* Home is the scan entry point only (Hero → ReportScanner).
-                Stats/Feeds/Analytics moved to /threatfeed; source credits live
-                on the dedicated /thanks Intel Sources page. */}
+            {/* Below the console: feed destinations, then Pro. Stat counters
+                stay on /threatfeed, the explainer loop on /about. */}
+            <Suspense fallback={null}>
+              <HomeSections />
+            </Suspense>
           </main>
           </PageTransition>
         } />

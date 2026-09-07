@@ -118,9 +118,9 @@ function labelSources(keys: string[]): string[] {
   return out
 }
 
-// RDAP answers from rdap.org are heterogeneous (registrar vs registry,
-// vcard vs plain name, string vs array eventAction). Parse everything with
-// optional chaining and render only the fields that came back.
+// RDAP answers are heterogeneous (registrar vs registry, vcard vs plain name,
+// string vs array eventAction). Parse everything with optional chaining and
+// render only the fields that came back.
 function WhoisSection({ scanResult, ip, abuseHref }: any) {
   const isDomain = !!scanResult?.isDomain
   const [fields, setFields] = useState<[string, string][] | null>(null)
@@ -135,11 +135,13 @@ function WhoisSection({ scanResult, ip, abuseHref }: any) {
     setFailed(false)
     setFields(null)
 
-    const urls = isDomain
-      ? [`https://rdap.org/domain/${encodeURIComponent(ip)}`]
-      // Any IP: rdap.org first; RIPE is a CORS-friendly bootstrap mirror that
-      // 301-redirects to the responsible RIR, so one flaky host never fails.
-      : [`https://rdap.org/ip/${encodeURIComponent(ip)}`, `https://rdap.db.ripe.net/ip/${encodeURIComponent(ip)}`]
+    // Same-origin only. rdap.org redirects to whichever registry owns the
+    // object (rdap.apnic.net, a registrar host for domains, …) and our CSP
+    // connect-src can never enumerate that set, so /api/rdap follows the
+    // redirect server-side and caches the answer at the edge.
+    const urls = [
+      `${import.meta.env.BASE_URL}api/rdap?kind=${isDomain ? 'domain' : 'ip'}&q=${encodeURIComponent(ip)}`,
+    ]
 
     const tryRdap = async () => {
       for (const url of urls) {
@@ -501,18 +503,22 @@ export default function ReportScanner({ scanResult, isScanning, showReport, scan
       if (scanResult.isIP || scanResult.isIPv6) {
         setLoadingIpInfo(true)
         const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 2000)
+        // 4s, not 2s: the lookup now goes through our own edge function, which
+        // may try a second provider before answering. Cached IPs return in ms.
+        const timeoutId = setTimeout(() => controller.abort(), 4000)
 
-        fetch(`https://get.geojs.io/v1/ip/geo/${ip}.json`, { signal: controller.signal })
-          .then(r => r.json())
+        // /api/geo normalises the provider response, so there is one shape here
+        // regardless of which upstream placed the address.
+        fetch(`${import.meta.env.BASE_URL}api/geo?ip=${encodeURIComponent(ip)}`, { signal: controller.signal })
+          .then(r => (r.ok ? r.json() : null))
           .then(data => {
             clearTimeout(timeoutId)
             if (data && data.ip) {
               setIpInfo({
                 country: data.country,
                 city: data.city,
-                isp: data.organization_name || data.organization,
-                asn: data.asn ? `AS${data.asn}` : null,
+                isp: data.isp,
+                asn: data.asn,
                 country_flag: data.country_code ? `https://flagcdn.com/w20/${data.country_code.toLowerCase()}.png` : null
               })
             } else {
@@ -637,7 +643,8 @@ export default function ReportScanner({ scanResult, isScanning, showReport, scan
   if (!showReport) return null;
 
   return (
-    <section className="py-12" id="report-section">
+    // scroll-mt clears the fixed navbar when a scan scrolls this into view.
+    <section className="py-12 scroll-mt-24" id="report-section">
       <div className="mx-auto max-w-5xl px-6 lg:px-12 relative">
         {/* Announce only the verdict, not the 400-node result tree: an
             aria-live on the whole section gets truncated/dropped by most
@@ -920,7 +927,7 @@ export default function ReportScanner({ scanResult, isScanning, showReport, scan
                   <div className="relative p-6 md:p-8 bg-slate-950/30 border-t border-white/[0.06]">
                     {scanResult && (scanResult.isIP || scanResult.isIPv6) && (
                       <p className="mb-5 text-xs font-medium tracking-wide text-platinum-500">
-                        IP info including ISP, ASN, and location provided by GeoJS, fetched live with each scan.
+                        ISP, ASN, and location come from ipwho.is, with GeoJS as fallback, looked up at scan time and cached for a day.
                       </p>
                     )}
                     {scanResult && scanResult.isDomain && (

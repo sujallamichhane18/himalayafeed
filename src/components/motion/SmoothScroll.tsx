@@ -4,8 +4,10 @@ import { useEffect } from 'react'
  * Inertial smooth scrolling (the "weighted" feel on Linear/Vercel-tier sites).
  * - Honors prefers-reduced-motion: Lenis is never installed (or even loaded).
  * - `anchors: true` keeps /threatfeed#stats and /threatfeed#feeds hash links gliding.
- * - Existing scrollIntoView({behavior:'smooth'}) calls route through Lenis
- *   automatically because it drives the native scroll position.
+ * - `tb:route-scroll` is how the rest of the app asks for a programmatic scroll:
+ *   `{scrollTo: 'top'}` on route change, or `{scrollTo: element, offset}` to
+ *   glide to a node. Dispatch it cancelable and fall back to native
+ *   scrollIntoView if it is not claimed here (reduced motion, chunk unloaded).
  */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -38,7 +40,19 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     const onRouteScroll = (e: Event) => {
       const detail = (e as CustomEvent).detail
-      if (detail?.scrollTo === 'top') lenis?.scrollTo(0, { immediate: true })
+      if (!lenis) return
+      if (detail?.scrollTo === 'top') {
+        lenis.scrollTo(0, { immediate: true })
+        return
+      }
+      if (detail?.scrollTo instanceof Element) {
+        // Claim the scroll. Lenis drives window.scrollTo from its own RAF loop,
+        // so a native smooth scrollIntoView running at the same time gets
+        // overwritten every frame and the page barely moves. The dispatcher
+        // falls back to native only when nobody calls preventDefault.
+        e.preventDefault()
+        lenis.scrollTo(detail.scrollTo, { offset: detail.offset ?? 0 })
+      }
     }
 
     return () => {

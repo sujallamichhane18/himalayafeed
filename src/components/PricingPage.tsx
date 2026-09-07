@@ -1,11 +1,12 @@
 import { ArrowRight, Check, Crown, Zap } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useSEO } from '@/useSEO'
+import { PRO_FEATURES, PRO_PRICE } from '@/proFeatures'
 import { TiltCard } from './motion/TiltCard'
 import { Magnetic } from './motion/Magnetic'
 
 const PRO_EMAIL = 'threatbasepro@gmail.com'
-const PRICE = 25
+const PRICE = PRO_PRICE
 
 const WAITLIST_HREF =
   `mailto:${PRO_EMAIL}?subject=${encodeURIComponent('Threatbase Pro waitlist')}` +
@@ -21,17 +22,8 @@ const FREE_FEATURES = [
   'Open source, MIT, no auth, no rate limits',
 ] as const
 
-// Ranked by what research says people actually pay for (2026-09 pass):
-// suppression first, then category aim, first-hand speed, source liveness.
-// Formats/token URL are the compatibility promise, parked last on purpose.
-const PRO_FEATURES = [
-  'False positives reviewed and pulled before every publish',
-  'Your own allowlist applied server-side to every download',
-  'Per-category lists: block C2 without blocking Tor',
-  'First-hand honeypot intel, listed minutes after our sensors see it',
-  'Every source liveness-monitored: dead ones dropped, never stale',
-  'Formats for your firewall, IDS/IPS and SIEM, under one stable auto-update URL',
-] as const
+// Pro rows live in src/proFeatures.ts: the landing Pro band quotes the top
+// three from there verbatim, so the wording has one home.
 
 function FeatureRow({ label, pro }: { label: string; pro?: boolean }) {
   return (

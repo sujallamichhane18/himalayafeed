@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
-import { motion, type Variants } from 'framer-motion'
-import { Activity, Database, Radio } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Activity } from 'lucide-react'
 import { fmt, INDICATOR_ACCENT, type IndicatorKey } from '../utils'
 import Section from './layout/Section'
 import { SectionHeading } from './motion/SectionHeading'
-import { Spotlight } from './motion/Spotlight'
 import { useCountUp } from '../lib/useCountUp'
 
 type MetricDef = {
@@ -36,16 +35,16 @@ function ValueSkeleton({ className = '' }: { className?: string }) {
   )
 }
 
-const gridVariants: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.07 } },
-}
-
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
-}
-
+/**
+ * Coverage ledger: one headline total, one composition bar, one legend table.
+ *
+ * The six-tile bento this replaces gave every indicator type the same visual
+ * weight, which is the opposite of the claim worth making — domains and hashes
+ * ARE the corpus, IPv6 and CIDR are a rounding error. Composition is the
+ * product fact, so the section is built as a single meter plus the rows that
+ * read it. Colour comes from DATA_RAMP in magnitude order (utils.ts), so rank
+ * and hue always agree.
+ */
 export default function Stats({ statsData }: any) {
   const lastUpdated = useMemo(() => {
     const ts = statsData?.last_updated
@@ -55,217 +54,112 @@ export default function Stats({ statsData }: any) {
     } catch { return null }
   }, [statsData])
 
-  const totalTracked = useMemo(() => {
-    if (!statsData) return null
-    return METRICS.reduce((sum, m) => sum + (statsData[m.statKey] || 0), 0)
+  // Rows sorted by volume so the ledger reads top-down as "what dominates".
+  // Before data lands, METRICS order stands in and the values render as
+  // skeletons; no zeros, no invented numbers.
+  const { rows, total } = useMemo(() => {
+    if (!statsData) return { rows: METRICS.map((m) => ({ m, value: null as number | null, share: 0 })), total: null }
+    const withValues = METRICS.map((m) => ({ m, value: (statsData[m.statKey] || 0) as number }))
+    const sum = withValues.reduce((acc, r) => acc + r.value, 0)
+    return {
+      rows: withValues
+        .sort((a, b) => b.value - a.value)
+        .map((r) => ({ ...r, share: sum ? (r.value / sum) * 100 : 0 })),
+      total: sum,
+    }
   }, [statsData])
 
-  // Split metrics into featured (top 2) and compact (remaining 4)
-  const featured = METRICS.slice(0, 2)
-  const compact = METRICS.slice(2)
+  const totalVal = useCountUp(total)
+  const feeds = statsData?.active_feeds ?? null
 
   return (
     <Section id="stats" className="overflow-hidden" containerClassName="relative z-10">
+      <SectionHeading
+        title="What is in the database"
+        subtitle="Every indicator here is aggregated, de-duplicated, and ready to ingest. This is the whole corpus, by type."
+        aside={lastUpdated && (
+          <div className="shrink-0 flex items-center gap-2 text-[11px] font-semibold text-slate-400 bg-white/[0.03] border border-white/[0.06] rounded-xl px-3.5 py-2">
+            <Activity size={13} className="text-red-400" />
+            <span className="uppercase tracking-wider">Synced</span>
+            <span className="text-slate-300 font-bold">{lastUpdated}</span>
+          </div>
+        )}
+      />
 
-        {/* Section header — NO eyebrow (tasteskill budget) */}
-        <SectionHeading
-          title="Threat database at a glance"
-          subtitle="Aggregated, de-duplicated indicators of compromise, refreshed continuously and ready for ingestion."
-          aside={lastUpdated && (
-            <div className="shrink-0 flex items-center gap-2 text-[11px] font-semibold text-slate-400 bg-white/[0.03] border border-white/[0.06] rounded-xl px-3.5 py-2">
-              <Activity size={13} className="text-red-400" />
-              <span className="uppercase tracking-wider">Synced</span>
-              <span className="text-slate-300 font-bold">{lastUpdated}</span>
-            </div>
-          )}
+      <motion.div
+        className="glass-card relative overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full bg-red-500/[0.06] blur-3xl"
         />
 
-        {/* Summary strip */}
-        <SummaryStrip total={totalTracked} feeds={statsData?.active_feeds ?? null} />
-
-        {/* BENTO LAYOUT — Featured 2 large + 4 compact (tasteskill §4.7 layout diversification) */}
-        <motion.div
-          className="space-y-5"
-          variants={gridVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-60px' }}
-        >
-          {/* Featured row: 2 large tiles */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {featured.map((m) => (
-              <FeaturedStatCard
-                key={m.key}
-                metric={m}
-                target={statsData ? (statsData[m.statKey] ?? 0) : null}
-              />
-            ))}
+        {/* Headline: the two numbers a defender quotes. */}
+        <div className="relative flex flex-wrap items-end justify-between gap-x-12 gap-y-6 px-6 pt-7 pb-6 md:px-9 md:pt-9">
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Indicators tracked</div>
+            <div className="mt-1.5 font-mono text-4xl font-bold leading-none tracking-tight text-white tabular-nums sm:text-5xl md:text-6xl">
+              {total != null ? fmt(totalVal) : <ValueSkeleton className="w-[9ch]" />}
+            </div>
           </div>
-
-          {/* Compact row: 4 tiles. One column on the narrowest phones — at 375px a
-              two-up split leaves ~65px of label width, which shreds "IPv6 Addresses"
-              across three lines. */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {compact.map((m) => (
-              <CompactStatCard
-                key={m.key}
-                metric={m}
-                target={statsData ? (statsData[m.statKey] ?? 0) : null}
-              />
-            ))}
+          <div className="md:text-right">
+            <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Live sources</div>
+            <div className="mt-1.5 font-mono text-2xl font-bold leading-none tracking-tight text-white tabular-nums md:text-3xl">
+              {feeds != null ? fmt(feeds) : <ValueSkeleton className="w-[3ch]" />}
+            </div>
           </div>
-        </motion.div>
+        </div>
+
+        {/* The meter: one stacked bar, segments in ledger order. Decoration for
+            screen readers — every segment's number is in the table below. */}
+        <div aria-hidden className="flex h-2.5 w-full overflow-hidden bg-white/[0.05]">
+          {rows.map(({ m, share }) => (
+            <span
+              key={m.key}
+              className={`h-full transition-[width,opacity] duration-1000 ease-out ${total == null ? 'animate-pulse' : ''}`}
+              style={{
+                width: total == null ? `${100 / rows.length}%` : `${share}%`,
+                backgroundColor: INDICATOR_ACCENT[m.key],
+                opacity: total == null ? 0.25 : 1,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* The legend: same order, same colours, with the actual counts. */}
+        <ul className="divide-y divide-white/[0.05]">
+          {rows.map(({ m, value, share }) => (
+            <LedgerRow key={m.key} metric={m} value={value} share={share} />
+          ))}
+        </ul>
+      </motion.div>
     </Section>
   )
 }
 
-function SummaryStrip({ total, feeds }: { total: number | null; feeds: number | null }) {
-  const totalVal = useCountUp(total)
+function LedgerRow({ metric, value, share }: { metric: MetricDef; value: number | null; share: number }) {
+  const count = useCountUp(value)
   return (
-    <motion.div
-      className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4"
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: 'easeOut', delay: 0.05 }}
-    >
-      <div className="glass-card relative overflow-hidden p-6 flex items-center gap-4">
-        <div className="p-3 icon-chip shrink-0">
-          <Database size={22} />
-        </div>
-        <div>
-          <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Total indicators tracked</div>
-          <div className="font-mono text-2xl md:text-3xl font-bold text-white tabular-nums tracking-tight mt-0.5">
-            {total != null ? fmt(totalVal) : <ValueSkeleton className="w-[8ch]" />}
-          </div>
-        </div>
-        <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-red-500/[0.05] blur-3xl pointer-events-none" />
-      </div>
-
-      <div className="glass-card relative overflow-hidden p-6 flex items-center gap-4">
-        <div className="p-3 icon-chip shrink-0">
-          <Radio size={22} />
-        </div>
-        <div>
-          <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Active intelligence feeds</div>
-          <div className="font-mono text-2xl md:text-3xl font-bold text-white tabular-nums tracking-tight mt-0.5">
-            {feeds != null ? fmt(feeds) : <ValueSkeleton className="w-[3ch]" />}
-          </div>
-        </div>
-        <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-red-500/[0.06] blur-3xl pointer-events-none" />
-      </div>
-    </motion.div>
-  )
-}
-
-/** Featured stat card — larger, with accent glow and more visual weight */
-function FeaturedStatCard({ metric, target }: { metric: MetricDef; target: number | null }) {
-  const value = useCountUp(target)
-  const ready = target != null
-  const accent = INDICATOR_ACCENT[metric.key]
-
-  return (
-    <Spotlight className="rounded-2xl h-full">
-      <motion.div
-        variants={cardVariants}
-        whileHover={{ y: -4 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-        className="group glass-card glass-hover relative flex flex-col overflow-hidden p-7 md:p-8 h-full"
-      >
-      {/* Accent glow on hover */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: `radial-gradient(130% 90% at 100% 0%, ${accent}1f, transparent 55%)` }}
+    <li className="group flex items-center gap-4 px-6 py-4 transition-colors hover:bg-white/[0.02] md:gap-6 md:px-9">
+      <span
+        aria-hidden
+        className="h-8 w-1 shrink-0 rounded-full"
+        style={{ backgroundColor: INDICATOR_ACCENT[metric.key] }}
       />
-      {/* Top accent line on hover */}
-      <div
-        className="absolute top-0 inset-x-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ backgroundImage: `linear-gradient(90deg, transparent, ${accent}b3, transparent)` }}
-      />
-
-      {/* Header row */}
-      <div className="flex items-center justify-between relative z-10">
-        <span className="text-xs font-bold text-slate-400 tracking-widest uppercase group-hover:text-slate-200 transition-colors">
-          {metric.label}
-        </span>
-        <div className="p-3 icon-chip transition-transform duration-300 group-hover:scale-105">
-          <img
-            src={`${import.meta.env.BASE_URL}img/${metric.img}`}
-            alt=""
-            aria-hidden="true"
-            className={`w-7 h-7 object-contain ${metric.invert ? 'invert opacity-80' : 'drop-shadow-sm'}`}
-          />
-        </div>
-      </div>
-
-      {/* Value — larger for featured. Steps down on narrow phones so an
-          eight-digit count cannot outrun the card. */}
-      <div className="mt-8 relative z-10">
-        <span className="block font-mono text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white tabular-nums leading-none">
-          {ready ? fmt(value) : <ValueSkeleton className="w-[7ch]" />}
-        </span>
-      </div>
-
-      {/* Footer */}
-      <div className="mt-6 pt-4 border-t border-white/[0.05] relative z-10">
-        <span className="text-[11px] text-slate-400 font-medium tracking-wide group-hover:text-slate-300 transition-colors">
-          {metric.sub}
-        </span>
-      </div>
-      </motion.div>
-    </Spotlight>
-  )
-}
-
-/** Compact stat card — smaller, denser layout for the secondary row */
-function CompactStatCard({ metric, target }: { metric: MetricDef; target: number | null }) {
-  const value = useCountUp(target)
-  const ready = target != null
-  const accent = INDICATOR_ACCENT[metric.key]
-
-  return (
-    <Spotlight className="rounded-2xl h-full">
-      <motion.div
-        variants={cardVariants}
-        whileHover={{ y: -3 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-        className="group glass-card glass-hover relative flex flex-col overflow-hidden p-5 h-full"
-      >
-      {/* Top accent line on hover */}
-      <div
-        className="absolute top-0 inset-x-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ backgroundImage: `linear-gradient(90deg, transparent, ${accent}99, transparent)` }}
-      />
-
-      {/* Icon + label */}
-      <div className="flex items-center gap-3 relative z-10">
-        <div className="p-2 icon-chip shrink-0">
-          <img
-            src={`${import.meta.env.BASE_URL}img/${metric.img}`}
-            alt=""
-            aria-hidden="true"
-            className={`w-5 h-5 object-contain ${metric.invert ? 'invert opacity-80' : 'drop-shadow-sm'}`}
-          />
-        </div>
-        <span className="text-[11px] font-bold text-slate-400 tracking-widest uppercase">
-          {metric.label}
-        </span>
-      </div>
-
-      {/* Value */}
-      <div className="mt-4 relative z-10">
-        <span className="block font-mono text-3xl font-bold tracking-tight text-white tabular-nums leading-none">
-          {ready ? fmt(value) : <ValueSkeleton className="w-[5ch]" />}
-        </span>
-      </div>
-
-      {/* Sub */}
-      <div className="mt-3 pt-3 border-t border-white/[0.05] relative z-10">
-        <span className="text-[10px] text-slate-400 font-medium tracking-wide group-hover:text-slate-300 transition-colors">
-          {metric.sub}
-        </span>
-      </div>
-      </motion.div>
-    </Spotlight>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-semibold text-white md:text-base">{metric.label}</span>
+        <span className="mt-0.5 hidden truncate text-xs text-slate-500 sm:block">{metric.sub}</span>
+      </span>
+      <span className="shrink-0 font-mono text-base font-bold tabular-nums text-white md:text-xl">
+        {value != null ? fmt(count) : <ValueSkeleton className="w-[6ch]" />}
+      </span>
+      <span className="w-[4.5rem] shrink-0 text-right font-mono text-xs tabular-nums text-slate-400 md:text-sm">
+        {value != null ? `${share < 0.1 && share > 0 ? '<0.1' : share.toFixed(1)}%` : ''}
+      </span>
+    </li>
   )
 }
