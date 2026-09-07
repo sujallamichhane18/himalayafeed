@@ -44,9 +44,18 @@ export const onRequestGet = async (context: any) => {
 
   if (kv) {
     try {
-      const hit = await kv.get(key, 'arrayBuffer')
-      if (hit) {
-        return new Response(hit, { headers: { ...baseHeaders(), 'X-KV-Cache': 'HIT' } })
+      const hit = await kv.getWithMetadata(key, 'arrayBuffer')
+      if (hit.value) {
+        // ExpirationTtl only applies at WRITE time — shortening META_TTL in a
+        // deploy does nothing until old entries expire on their original clock.
+        // So meta entries also carry their store timestamp and are revalidated
+        // here once older than META_TTL. (Missing storedAt = written by an old
+        // deploy = stale by definition for META keys.)
+        const staleMeta = META_KEYS.includes(rel) &&
+          Date.now() - (Number(hit.metadata?.storedAt) || 0) > META_TTL * 1000
+        if (!staleMeta) {
+          return new Response(hit.value, { headers: { ...baseHeaders(), 'X-KV-Cache': 'HIT' } })
+        }
       }
     } catch {
       /* KV read failure must not take down the feed */
@@ -66,7 +75,10 @@ export const onRequestGet = async (context: any) => {
   const buf = await upstream.arrayBuffer()
   let headers = baseHeaders(upstream.headers.get('Content-Type'))
   if (buf.byteLength <= KV_MAX) {
-    context.waitUntil(kv.put(key, buf, { expirationTtl: META_KEYS.includes(rel) ? META_TTL : KV_TTL }).catch(() => {}))
+    context.waitUntil(kv.put(key, buf, {
+      expirationTtl: META_KEYS.includes(rel) ? META_TTL : KV_TTL,
+      metadata: { storedAt: Date.now() },
+    }).catch(() => {}))
     headers = { ...headers, 'X-KV-Cache': 'MISS-STORED' }
   }
   return new Response(buf, { headers })
