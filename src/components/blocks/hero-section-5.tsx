@@ -30,15 +30,11 @@ function RevealWords({ text, className = '', delay = 0 }: { text: string; classN
 // kept: one known-clean scan proves the engine discriminates, which is what
 // analysts check first. Staleness ceiling: these are baked; if the feed ever
 // prunes one the chip turns clean — refresh alongside the feed-count PR cycle.
-const EXAMPLES: { value: string; label: string; hit: boolean }[] = [
-  { value: '103.78.2.252', label: '103.78.2.252', hit: true },
-  { value: '107.150.97.10', label: '107.150.97.10', hit: true },
-  {
-    value: '00000077553a5b27a610ac98f29563bbd6e0decc020c2d49e4fa0d89197e7fd8',
-    label: '00000077…197e7fd8',
-    hit: true,
-  },
-  { value: '8.8.8.8', label: '8.8.8.8', hit: false },
+const EXAMPLES: { value: string; label: string }[] = [
+  { value: '103.78.2.252', label: '103.78.2.252' },
+  { value: '107.150.97.10', label: '107.150.97.10' },
+  { value: '00000077553a5b27a610ac98f29563bbd6e0decc020c2d49e4fa0d89197e7fd8', label: '00000077553a5b27' },
+  { value: '8.8.8.8', label: '8.8.8.8' },
 ]
 
 // Recent hunts: console memory for the returning analyst. Written by App's
@@ -94,6 +90,21 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
       return () => clearTimeout(t)
     }
   }, [pulse, reducedMotion])
+
+  // First visit of the session: prefill the bar with YOUR public IP
+  // (/api/whoami echoes CF-Connecting-IP back to you and you alone). Prefill
+  // only — no scan; the analyst decides whether to hunt themselves. Never
+  // clobbers a value already present (typed, or a ?search= deep link).
+  useEffect(() => {
+    if (sessionStorage.getItem('tb:ip_prefill')) return
+    sessionStorage.setItem('tb:ip_prefill', '1')
+    let cancelled = false
+    fetch(`${import.meta.env.BASE_URL}api/whoami`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: any) => { if (!cancelled && d?.ip) setScanInput((prev: string) => prev || d.ip) })
+      .catch(() => { /* offline / dev without functions: bar just stays empty */ })
+    return () => { cancelled = true }
+  }, [])
 
   const [recent, setRecent] = useState<RecentHunt[]>(readRecent)
   useEffect(() => {
@@ -276,7 +287,7 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
                       className="inline-flex min-h-11 items-center gap-1.5 pl-3 pr-1 font-mono text-xs text-slate-300 hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/30 rounded-full"
                     >
                       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${r.malicious ? 'bg-red-500' : 'bg-emerald-500'}`} aria-hidden />
-                      {r.value.length > 24 ? `${r.value.slice(0, 8)}…${r.value.slice(-8)}` : r.value}
+                      {r.value.length > 24 ? r.value.slice(0, 14) : r.value}
                     </button>
                     <button
                       type="button"
@@ -305,14 +316,13 @@ export function HeroSection({ scanInput, setScanInput, handleScan, isScanning, s
                 <button
                   key={ex.value}
                   type="button"
-                  title={ex.value + (ex.hit ? ' — live in the feed: this hunt returns a threat' : ' — known-clean: this hunt returns nothing')}
+                  title={ex.value}
                   onClick={() => {
                     setScanInput(ex.value)
                     handleScan(ex.value)
                   }}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 font-mono text-xs text-slate-300 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/30"
+                  className="inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/[0.03] px-4 font-mono text-xs text-slate-300 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/30"
                 >
-                  <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${ex.hit ? 'bg-red-500' : 'bg-emerald-500'}`} aria-hidden />
                   {ex.label}
                 </button>
               ))}
