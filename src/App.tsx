@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, lazy, Suspense, type ReactNode } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { MotionConfig, AnimatePresence } from 'framer-motion'
-import { HeroSection } from './components/blocks/hero-section-5'
+import { HeroSection, RECENT_EVENT } from './components/blocks/hero-section-5'
 import ReportScanner from './components/ReportScanner'
 import Footer from './components/Footer'
 import ToastContainer from './components/ToastContainer'
@@ -28,7 +28,7 @@ const PricingPage = lazy(() => import('./components/PricingPage'))
 const ThreatFeedPage = lazy(() => import('./components/ThreatFeedPage'))
 import { AuthProvider } from './AuthContext'
 import { getBaseUrl, formatSyncTime, feedPath } from './utils'
-import { scanIndicatorLogic } from './scanner'
+import { scanIndicatorLogic, classifyIndicator } from './scanner'
 import { useSEO } from './useSEO'
 import InitialVerification from './components/InitialVerification'
 
@@ -77,8 +77,6 @@ export default function App() {
   const [scanResult, setScanResult] = useState<any>(null)
   const [isScanning, setIsScanning] = useState(false)
   const [showReport, setShowReport] = useState(false)
-  const lastScanTime = useRef<number>(0)
-  const SCAN_COOLDOWN = 300 // 300ms
   const prevPathRef = useRef<string>(location.pathname)
 
   // Initial verification
@@ -103,38 +101,26 @@ export default function App() {
   const handleScan = useCallback(async (inputOverride?: string) => {
     const raw = (inputOverride ?? scanInput).trim()
     if (!raw) return
-
-    const now = Date.now()
-    if (now - lastScanTime.current < SCAN_COOLDOWN) {
-      const remaining = Math.ceil((SCAN_COOLDOWN - (now - lastScanTime.current)) / 1000)
-      addToast(`Please wait ${remaining}s before scanning again.`, 'error')
-      return
-    }
+    // In-flight double-submit is a no-op, not an error: the Hunt button shows
+    // the scan state, so there is nothing to "wait" the user from.
+    if (isScanning) return
 
     if (raw.length > 255) {
       addToast('Input is too long. Please enter a valid indicator.', 'error')
       return
     }
 
-    // Validate format before starting scan
-    const isURL = /^https?:\/\/.+/.test(raw)
-    const isHash = /^[a-fA-F0-9]{32}(?:[a-fA-F0-9]{8})?(?:[a-fA-F0-9]{24})?$/.test(raw)
-    const ip = isURL && !isHash ? raw : raw.toLowerCase()
-    const isIP = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)
-    const isIPv6 = ip.includes(':') && /^[0-9a-fA-F:]+$/.test(ip) && !ip.includes('/')
-    const isCIDR = ip.includes('/') && /^[a-fA-F0-9:.]+\/\d{1,3}$/.test(ip)
-    const isDomain = !isIP && !isIPv6 && !isCIDR && !isURL && !isHash && /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.(?!-)[A-Za-z0-9-]{1,63}(?<!-))*\.[A-Za-z]{2,}$/.test(ip)
-
-    if (!isIP && !isIPv6 && !isCIDR && !isDomain && !isHash && !isURL) {
+    // One source of truth for format validation — the scanner's own parser,
+    // refang-aware (App used to carry a third hand-rolled copy of these
+    // regexes; drift between them is how pasted hxxp IOCs started failing).
+    if (classifyIndicator(raw).type === 'invalid') {
       addToast('Invalid indicator format. Please enter a valid IPv4, IPv6, Domain, URL, or Hash.', 'error')
       return
     }
 
-    lastScanTime.current = now
-
     // Perform scan directly without Turnstile
     performScan(raw)
-  }, [scanInput, addToast])
+  }, [scanInput, addToast, isScanning])
 
   const performScan = useCallback(async (inputOverride?: string) => {
     const raw = (inputOverride ?? scanInput).trim().replace(/[<>"'&]/g, '')
@@ -153,6 +139,14 @@ export default function App() {
     const result = await scanIndicatorLogic(raw, feedVersion, statsData)
     setScanResult(result)
     setIsScanning(false)
+
+    // Recent-hunts memory for the hero's keyboard console (cap 5, dedupe).
+    try {
+      const item = { value: raw, type: result.type, malicious: !!result.isMalicious }
+      const prev: any[] = JSON.parse(localStorage.getItem('tb:recent') || '[]')
+      localStorage.setItem('tb:recent', JSON.stringify([item, ...prev.filter((r) => r.value !== raw)].slice(0, 5)))
+      window.dispatchEvent(new Event(RECENT_EVENT))
+    } catch { /* private mode / quota: recent row is an enhancement, not a feature */ }
   }, [scanInput, feedVersion, statsData])
 
 
@@ -248,7 +242,7 @@ export default function App() {
           <PageTransition>
           <main id="main-content">
             <HomeSeo />
-            <HeroSection scanInput={scanInput} setScanInput={setScanInput} handleScan={handleScan} />
+            <HeroSection scanInput={scanInput} setScanInput={setScanInput} handleScan={handleScan} isScanning={isScanning} scanResult={scanResult} />
 
             <ReportScanner
               isScanning={isScanning}

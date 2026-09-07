@@ -439,12 +439,18 @@ export default function ReportIP({ addToast }: any) {
                           type="button"
                           onClick={() => { setTags(prev => active ? prev.filter(t => t !== tag) : prev.length < MAX_TAGS ? [...prev, tag] : prev); setFieldErrors(p => ({ ...p, tags: undefined })) }}
                           aria-pressed={active}
+                          // Selection state is deliberately NEUTRAL (inverted
+                          // fill + check), not TIER_CHIP severity colours:
+                          // red/orange here reads as "this is an error", and
+                          // every tag is danger-ish anyway. Severity colour is
+                          // for verdict display (below), not for checkboxes.
                           className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
                             active
-                              ? getCategoryColor(tag)
+                              ? 'border border-white/35 bg-white/[0.14] text-white'
                               : 'border border-white/10 bg-white/[0.02] text-slate-400 hover:bg-white/[0.05] hover:text-slate-200'
                           }`}
                         >
+                          {active && <Check size={11} className="mr-1.5 -mt-0.5 inline-block" strokeWidth={3} />}
                           {tag}
                         </button>
                       )

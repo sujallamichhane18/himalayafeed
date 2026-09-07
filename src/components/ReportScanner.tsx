@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence, useReducedMotion, useMotionValue, useTransform, animate } from 'framer-motion'
-import { Bug, ShieldCheck, AlertTriangle, Check, ShieldAlert, Copy, Globe } from 'lucide-react'
+import { Bug, ShieldCheck, AlertTriangle, Check, ShieldAlert, Copy, Globe, Link2 } from 'lucide-react'
 import supabaseClient from '../supabaseClient'
 import { timeAgo, categoryTier, TIER_CHIP, TIER_ACCENT } from '../utils'
 import { useAuth } from '../AuthContext'
@@ -597,6 +597,20 @@ export default function ReportScanner({ scanResult, isScanning, showReport, scan
     }
   }
 
+  // Share the verdict, not just the indicator: the ?search= deep link already
+  // works on load (App's auto-scan effect) but was never surfaced. Every
+  // dirty verdict becomes a pre-run demo for whoever you send it to.
+  const [linkCopied, setLinkCopied] = useState(false)
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/?search=${encodeURIComponent(ip)}`)
+      setLinkCopied(true)
+      setTimeout(() => setLinkCopied(false), 1600)
+    } catch {
+      addToast('Could not copy link to clipboard.', 'error')
+    }
+  }
+
   const StatusIcon = type === 'danger' ? Bug : type === 'safe' ? ShieldCheck : type === 'disputed' ? ShieldAlert : AlertTriangle
 
   const confidence = computeConfidence(scanResult, reports.length)
@@ -698,6 +712,19 @@ export default function ReportScanner({ scanResult, isScanning, showReport, scan
                           {copied
                             ? <Check size={15} className="text-emerald-400 shrink-0" strokeWidth={2.5} />
                             : <Copy size={15} className="text-slate-500 group-hover:text-platinum-200 shrink-0 transition-colors" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCopyLink}
+                          title="Copy link to this scan result"
+                          className={`inline-flex h-11 items-center gap-1.5 rounded-xl border px-3 font-mono text-xs tracking-tight transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/30 ${
+                            linkCopied
+                              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
+                              : 'border-white/[0.08] bg-slate-950/60 text-platinum-500 hover:border-white/15 hover:text-platinum-200'
+                          }`}
+                        >
+                          {linkCopied ? <Check size={13} strokeWidth={2.5} /> : <Link2 size={13} />}
+                          {linkCopied ? 'Link copied' : 'Copy link'}
                         </button>
                         <span className="text-xs font-medium text-platinum-500">
                           Scanned {scannedAt.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
