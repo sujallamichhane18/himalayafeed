@@ -103,3 +103,6 @@ pipeline/test_stix_feed.py
 
 # TypeScript incremental build artifacts
 *.tsbuildinfo
+
+# graphify AI memory (local knowledge graph, not for the repo)
+graphify-out/
