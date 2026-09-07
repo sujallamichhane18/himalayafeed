@@ -13,6 +13,11 @@
 
 const RAW_BASE = 'https://raw.githubusercontent.com/kalidada18/threatbase/main/ioc/'
 const KV_TTL = 21600 // 6 h
+// Tiny UI-facing metadata (stats/history/manifest/checksums) drives the
+// "Synced" badge — 6 h staleness there reads as "the site is broken", and
+// raw happily serves a few KB. Keep the long TTL for everything bigger.
+const META_TTL = 600 // 10 min
+const META_KEYS = ['data/stats.json', 'data/history.json', 'data/manifest.json', 'data/feed_health.json', 'data/geo.json', 'data/top_apt.json', 'data/community_reports.json', 'ip/top_ips.json']
 const KV_MAX = 25_000_000 // Cloudflare KV hard limit per value
 
 // Pro-only products; they no longer exist in the public repo, so upstream would
@@ -61,7 +66,7 @@ export const onRequestGet = async (context: any) => {
   const buf = await upstream.arrayBuffer()
   let headers = baseHeaders(upstream.headers.get('Content-Type'))
   if (buf.byteLength <= KV_MAX) {
-    context.waitUntil(kv.put(key, buf, { expirationTtl: KV_TTL }).catch(() => {}))
+    context.waitUntil(kv.put(key, buf, { expirationTtl: META_KEYS.includes(rel) ? META_TTL : KV_TTL }).catch(() => {}))
     headers = { ...headers, 'X-KV-Cache': 'MISS-STORED' }
   }
   return new Response(buf, { headers })
