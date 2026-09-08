@@ -455,7 +455,7 @@ export default function ApiDocsPage() {
   ]
 
   return (
-    <IsoPageShell color="207, 23, 51">
+    <IsoPageShell>
       {/* Hero */}
       <motion.div
         initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}

@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
   classifyIndicator,
-  ipv4ToLong,
   findMatchingCidr,
   binarySearchString,
   ipCsvCompare,
@@ -12,6 +11,7 @@ import {
   parseIpFeedLine,
   validateTypedIndicator,
 } from './scanner'
+import { ipv4ToLong } from './lib/ipValidation'
 
 describe('classifyIndicator', () => {
   it('classifies IPv4 addresses', () => {

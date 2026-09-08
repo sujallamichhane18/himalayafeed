@@ -9,13 +9,7 @@
 // server-side only, from env, inside the Cloudflare Functions.
 
 /** Read a Vite build-time env var, tolerating runtimes where it is undefined. */
-function viteEnv(key: string): string | undefined {
-  try {
-    return (import.meta as any).env?.[key]
-  } catch {
-    return undefined
-  }
-}
+const viteEnv = (key: string): string | undefined => (import.meta as any).env?.[key]
 
 export const SUPABASE_URL =
   viteEnv('VITE_SUPABASE_URL') || 'https://fybwjibrvwqwnspgswtp.supabase.co'

@@ -34,11 +34,11 @@ export default function ThreatFeedPage({ statsData, feedVersion, statsFailed, on
   const reduce = useReducedMotion()
 
   return (
-    <IsoPageShell color="207, 23, 51" contentClassName="w-full px-0">
+    <IsoPageShell contentClassName="w-full px-0">
       <main id="main-content" className="w-full">
         {/* Header — px-0 above lets the sections run full-bleed, so the header
             carries its own gutters via Container. */}
-        <Container width="wide" className="pt-4 pb-10">
+        <Container className="pt-4 pb-10">
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

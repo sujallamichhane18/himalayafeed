@@ -11,7 +11,7 @@ import { fmt, timeAgo, DEFAULT_AVATAR, categoryTier, TIER_CHIP } from '../utils'
 import { useAuth } from '../AuthContext'
 import { useSEO } from '@/useSEO'
 import DOMPurify from 'dompurify'
-import { DNS_WHITELIST_CIDRS, PRIVATE_RESERVED_CIDRS, inCidr, isPrivateReservedIpv6 } from '@/lib/ipValidation'
+import { DNS_WHITELIST_CIDRS, PRIVATE_RESERVED_CIDRS, IPV4_RE, inCidr, isPrivateReservedIpv6 } from '@/lib/ipValidation'
 
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -139,7 +139,7 @@ export default function ReportIP({ addToast }: any) {
       return
     }
 
-    const isV4 = /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/.test(raw)
+    const isV4 = IPV4_RE.test(raw)
     const isV6 = raw.includes(':') && /^[0-9a-fA-F:]+$/.test(raw)
 
     if (isV4 || isV6) {

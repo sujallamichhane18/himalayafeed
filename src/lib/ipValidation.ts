@@ -118,22 +118,33 @@ export const PRIVATE_RESERVED_CIDRS = [
   "203.0.113.0/24", "224.0.0.0/4", "240.0.0.0/4", "255.255.255.255/32"
 ]
 
-export function ipToLong(ip: string): number {
-  return ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+/** Syntactically valid dotted-quad IPv4. Shared by every caller that used to inline it. */
+export const IPV4_RE =
+  /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+
+/** Convert a dotted IPv4 string to an unsigned 32-bit integer, or null if it isn't one. */
+export function ipv4ToLong(ip: string): number | null {
+  const parts = ip.split('.')
+  if (parts.length !== 4) return null
+  let acc = 0
+  for (let i = 0; i < 4; i++) {
+    const oct = Number(parts[i])
+    if (!Number.isInteger(oct) || oct < 0 || oct > 255) return null
+    acc = (acc << 8) + oct
+  }
+  return acc >>> 0
 }
 
 export function inCidr(ip: string, cidr: string): boolean {
-  try {
-    const [baseIp, maskStr] = cidr.split('/');
-    const mask = parseInt(maskStr, 10);
-    const ipLong = ipToLong(ip);
-    const baseLong = ipToLong(baseIp);
-    if (mask === 0) return true;
-    const bitmask = mask === 0 ? 0 : (~0 << (32 - mask)) >>> 0;
-    return (ipLong & bitmask) === (baseLong & bitmask);
-  } catch {
-    return false;
-  }
+  const [baseIp, maskStr] = cidr.split('/')
+  const mask = Number(maskStr)
+  if (!Number.isInteger(mask) || mask < 0 || mask > 32) return false
+  const ipLong = ipv4ToLong(ip)
+  const baseLong = ipv4ToLong(baseIp)
+  if (ipLong === null || baseLong === null) return false
+  if (mask === 0) return true
+  const bitmask = (~0 << (32 - mask)) >>> 0
+  return (ipLong & bitmask) === (baseLong & bitmask)
 }
 
 export function isPrivateReservedIpv6(ip: string): boolean {

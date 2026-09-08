@@ -44,7 +44,7 @@ export default function AboutPage() {
   ]
 
   return (
-    <IsoPageShell color="207, 23, 51">
+    <IsoPageShell>
 
         {/* Top Header */}
         <motion.div

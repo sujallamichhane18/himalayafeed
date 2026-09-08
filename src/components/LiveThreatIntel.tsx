@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { animate, motion, useReducedMotion } from 'framer-motion'
 import { getBaseUrl, fmt, timeAgo, DATA_RAMP, feedPath } from '../utils'
 import { COUNTRY_COORDS } from '../lib/countryCoords'
+import { EASE_EXPO } from './motion/primitives'
 
 // Category → accent colour. The breakdown is always rendered in descending
 // volume order, so colour comes from rank position in the single ordered
@@ -9,7 +10,6 @@ import { COUNTRY_COORDS } from '../lib/countryCoords'
 const rampAt = (i: number) => DATA_RAMP[Math.min(i, DATA_RAMP.length - 1)]
 
 const SW = 150, SH = 46, SPAD = 6
-const EASE_OUT = [0.16, 1, 0.3, 1] as const
 
 // Catmull-Rom → cubic bezier: a smooth curve through the daily points,
 // plus the raw point coords the hover tooltip and crosshair need.
@@ -41,7 +41,7 @@ function CountUp({ value }: { value: number }) {
     if (reduce || value <= 0) { setDisplay(fmt(value)); return }
     const controls = animate(0, value, {
       duration: 1.4,
-      ease: EASE_OUT,
+      ease: EASE_EXPO,
       onUpdate: v => setDisplay(fmt(Math.round(v))),
     })
     return () => controls.stop()
@@ -257,7 +257,7 @@ export default function LiveThreatIntel() {
                   strokeLinecap="round"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ duration: 1.2, ease: EASE_OUT }}
+                  transition={{ duration: 1.2, ease: EASE_EXPO }}
                 />
                 {/* Crosshair while hovering */}
                 {hp && <line x1={hp[0]} y1={hp[1]} x2={hp[0]} y2={SH} stroke="rgba(205,211,222,0.25)" strokeWidth="1" strokeDasharray="2 2" />}
@@ -296,7 +296,7 @@ export default function LiveThreatIntel() {
                   style={{ flexBasis: `${(n / breakdown.sum) * 100}%`, backgroundColor: rampAt(i) }}
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.7, delay: 0.15 + i * 0.05, ease: EASE_OUT }}
+                  transition={{ duration: 0.7, delay: 0.15 + i * 0.05, ease: EASE_EXPO }}
                 />
               ))}
             </div>
@@ -336,7 +336,7 @@ export default function LiveThreatIntel() {
               className="group -mx-1.5 flex flex-col gap-1.5 rounded-lg px-1.5 py-1.5 transition-colors hover:bg-white/[0.03]"
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.45, delay: 0.35 + i * 0.07, ease: EASE_OUT }}
+              transition={{ duration: 0.45, delay: 0.35 + i * 0.07, ease: EASE_EXPO }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -354,7 +354,7 @@ export default function LiveThreatIntel() {
                   className="h-full origin-left rounded-full bg-gradient-to-r from-red-700 via-red-500 to-[#e2566c] shadow-[0_0_8px_rgba(239,68,68,0.6)]"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.7, delay: 0.45 + i * 0.07, ease: EASE_OUT }}
+                  transition={{ duration: 0.7, delay: 0.45 + i * 0.07, ease: EASE_EXPO }}
                   style={{ width: `${Math.max(2, a.pct)}%` }}
                 />
               </div>

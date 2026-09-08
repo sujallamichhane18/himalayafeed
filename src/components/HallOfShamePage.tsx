@@ -49,7 +49,7 @@ export default function HallOfShamePage() {
   const [podium, rest] = [show.slice(0, 3), show.slice(3)]
 
   return (
-    <IsoPageShell color="207, 23, 51">
+    <IsoPageShell>
       {/* Header */}
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 20 }}

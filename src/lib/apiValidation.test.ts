@@ -1,5 +1,23 @@
 import { describe, it, expect } from 'vitest'
 import { isValidPublicIp, isValidCategory, MAX_CATEGORY_LENGTH } from './apiValidation'
+import { inCidr } from './ipValidation'
+
+describe('inCidr', () => {
+  it('matches inside the prefix and not outside it', () => {
+    expect(inCidr('10.5.5.5', '10.0.0.0/8')).toBe(true)
+    expect(inCidr('11.5.5.5', '10.0.0.0/8')).toBe(false)
+    expect(inCidr('0.0.0.0', '0.0.0.0/0')).toBe(true)
+  })
+
+  it('rejects rather than matches when the CIDR or IP is malformed', () => {
+    // A mask-less or junk prefix must not swallow every address: an entry like
+    // "10.0.0.0" in the private/allowlist tables would otherwise mark all IPs.
+    expect(inCidr('8.8.8.8', '10.0.0.0')).toBe(false)
+    expect(inCidr('8.8.8.8', '10.0.0.0/33')).toBe(false)
+    expect(inCidr('8.8.8.8', 'nonsense/8')).toBe(false)
+    expect(inCidr('999.1.1.1', '10.0.0.0/8')).toBe(false)
+  })
+})
 
 describe('isValidPublicIp', () => {
   it('accepts publicly routable IPv4', () => {

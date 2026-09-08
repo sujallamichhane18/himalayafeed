@@ -97,7 +97,7 @@ export default function TopAptPage() {
   const activeKey = window_ === '24h' ? 'pulses_24h' : 'pulses_7d'
 
   return (
-    <IsoPageShell color="207, 23, 51">
+    <IsoPageShell>
       {/* Header */}
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 20 }}

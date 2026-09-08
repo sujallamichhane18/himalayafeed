@@ -1,7 +1,4 @@
-import { PRIVATE_RESERVED_CIDRS, inCidr, isPrivateReservedIpv6, isStrictIpv6 } from './ipValidation'
-
-const IPV4_RE =
-  /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+import { PRIVATE_RESERVED_CIDRS, IPV4_RE, inCidr, isPrivateReservedIpv6, isStrictIpv6 } from './ipValidation'
 
 /** Longest indicator we accept on the scan endpoint (mirrors the web UI cap). */
 export const MAX_INDICATOR_LENGTH = 255

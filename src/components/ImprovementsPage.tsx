@@ -285,7 +285,7 @@ export default function ImprovementsPage() {
   const reduce = useReducedMotion()
 
   return (
-    <IsoPageShell color="207, 23, 51">
+    <IsoPageShell>
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

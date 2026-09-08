@@ -88,17 +88,3 @@ export const COUNTRY_COORDS: Record<string, CountryGeo> = {
   CY: { name: 'Cyprus', coords: [33.4, 35.1] },
   SI: { name: 'Slovenia', coords: [14.5, 46.2] },
 }
-
-// Curated "victim" hubs that attacks arc toward — major data-center /
-// enterprise regions. Used as targets to mimic real attack-map flows.
-export const TARGET_HUBS: Array<{ cc: string; name: string; coords: [number, number] }> = [
-  { cc: 'US', name: 'United States', coords: [-98.5, 39.8] },
-  { cc: 'DE', name: 'Germany', coords: [10.5, 51.2] },
-  { cc: 'GB', name: 'United Kingdom', coords: [-1.5, 52.4] },
-  { cc: 'SG', name: 'Singapore', coords: [103.8, 1.35] },
-  { cc: 'JP', name: 'Japan', coords: [138.3, 36.2] },
-  { cc: 'NL', name: 'Netherlands', coords: [5.3, 52.1] },
-  { cc: 'BR', name: 'Brazil', coords: [-51.9, -14.2] },
-  { cc: 'IN', name: 'India', coords: [78.9, 20.6] },
-  { cc: 'AU', name: 'Australia', coords: [133.8, -25.3] },
-]

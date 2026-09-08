@@ -8,7 +8,7 @@ import {
   feedPath,
 } from './utils'
 import supabaseClient from './supabaseClient'
-import { isStrictIpv6 } from './lib/ipValidation'
+import { IPV4_RE, ipv4ToLong, isStrictIpv6 } from './lib/ipValidation'
 
 type CompareFn = (query: string, line: string) => number
 
@@ -98,19 +98,6 @@ async function fetchFeedTextForQuery(
   if (!chunk) return { text: '' }
 
   return fetchAndCacheFeedText(baseUrl, chunk.file, feedVersion)
-}
-
-/** Convert a dotted IPv4 string to an unsigned 32-bit integer. */
-export function ipv4ToLong(ip: string): number | null {
-  const parts = ip.split('.')
-  if (parts.length !== 4) return null
-  let acc = 0
-  for (let i = 0; i < 4; i++) {
-    const oct = Number(parts[i])
-    if (!Number.isInteger(oct) || oct < 0 || oct > 255) return null
-    acc = (acc << 8) + oct
-  }
-  return acc >>> 0
 }
 
 interface ParsedCidr {
@@ -287,8 +274,7 @@ export function classifyIndicator(rawInput: string) {
   const isHash = /^(?:[a-fA-F0-9]{32}|[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$/.test(rawInput)
   const ip = isURL && !isHash ? rawInput : rawInput.toLowerCase()
 
-  const isIP =
-    /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)
+  const isIP = IPV4_RE.test(ip)
   const isIPv6 = ip.includes(':') && /^[0-9a-fA-F:]+$/.test(ip) && !ip.includes('/')
   const isCIDR = ip.includes('/') && /^[a-fA-F0-9:.]+\/\d{1,3}$/.test(ip)
   const isDomain =
