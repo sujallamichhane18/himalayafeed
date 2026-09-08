@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-07T18:20:21+00:00",
+ "generated_at": "2026-09-08T02:21:22+00:00",
  "source": "AlienVault OTX pulse search",
  "note": "Activity = threat-intel pulses (campaign reports) mentioning the group in the window. Vendor/community reporting \u2014 follow each link to its source.",
  "actors": [
@@ -37,55 +37,6 @@
    ]
   },
   {
-   "name": "MuddyWater",
-   "aka": [
-    "Mercury",
-    "STATIC KITTEN",
-    "Seedur"
-   ],
-   "sponsor": "Iran (MOIS)",
-   "pulses_24h": 1,
-   "pulses_7d": 2,
-   "malware": [],
-   "targets": [],
-   "campaigns": [
-    {
-     "title": "MuddyWater",
-     "url": "https://otx.alienvault.com/pulse/6a9df716c99dc7887aeb68d9",
-     "modified": "2026-09-06T23:28:22.020000",
-     "last_24h": true
-    },
-    {
-     "title": "MuddyWater: ClickFix to Telegram & PatchAgent Backdoor.",
-     "url": "https://otx.alienvault.com/pulse/6a74ede416b1c9caa200b99e",
-     "modified": "2026-09-05T20:01:02.113000",
-     "last_24h": false
-    }
-   ]
-  },
-  {
-   "name": "Lazarus Group",
-   "aka": [
-    "Lazarus",
-    "APT38",
-    "Hidden Cobra",
-    "BlueNoroff"
-   ],
-   "sponsor": "North Korea",
-   "pulses_24h": 1,
-   "pulses_7d": 1,
-   "malware": [],
-   "targets": [],
-   "campaigns": [
-    {
-     "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors. | Lazarus",
-     "url": "https://otx.alienvault.com/pulse/6a9db5ef43636929696eac66",
-     "modified": "2026-09-06T18:50:23.858000",
-     "last_24h": true
-    }
-   ]
-  },
-  {
    "name": "APT37",
    "aka": [
     "Reaper",
@@ -107,23 +58,29 @@
    ]
   },
   {
-   "name": "Turla",
+   "name": "MuddyWater",
    "aka": [
-    "Dragonfly",
-    "CRONY",
-    "Uroburos"
+    "Mercury",
+    "STATIC KITTEN",
+    "Seedur"
    ],
-   "sponsor": "Russia",
-   "pulses_24h": 1,
-   "pulses_7d": 1,
+   "sponsor": "Iran (MOIS)",
+   "pulses_24h": 0,
+   "pulses_7d": 2,
    "malware": [],
    "targets": [],
    "campaigns": [
     {
-     "title": "Turla",
-     "url": "https://otx.alienvault.com/pulse/6a9dd822e0b521d84f4536d1",
-     "modified": "2026-09-06T21:16:18.532000",
-     "last_24h": true
+     "title": "MuddyWater",
+     "url": "https://otx.alienvault.com/pulse/6a9df716c99dc7887aeb68d9",
+     "modified": "2026-09-06T23:28:22.020000",
+     "last_24h": false
+    },
+    {
+     "title": "MuddyWater: ClickFix to Telegram & PatchAgent Backdoor.",
+     "url": "https://otx.alienvault.com/pulse/6a74ede416b1c9caa200b99e",
+     "modified": "2026-09-05T20:01:02.113000",
+     "last_24h": false
     }
    ]
   },
@@ -170,6 +127,49 @@
      "title": "Investigating Midnight Blizzard's AI Powered Infrastructure.",
      "url": "https://otx.alienvault.com/pulse/6a9b1b352e3dc6b4f370fa6e",
      "modified": "2026-09-04T19:25:41.967000",
+     "last_24h": false
+    }
+   ]
+  },
+  {
+   "name": "Turla",
+   "aka": [
+    "Dragonfly",
+    "CRONY",
+    "Uroburos"
+   ],
+   "sponsor": "Russia",
+   "pulses_24h": 0,
+   "pulses_7d": 1,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "Turla",
+     "url": "https://otx.alienvault.com/pulse/6a9dd822e0b521d84f4536d1",
+     "modified": "2026-09-06T21:16:18.532000",
+     "last_24h": false
+    }
+   ]
+  },
+  {
+   "name": "Lazarus Group",
+   "aka": [
+    "Lazarus",
+    "APT38",
+    "Hidden Cobra",
+    "BlueNoroff"
+   ],
+   "sponsor": "North Korea",
+   "pulses_24h": 0,
+   "pulses_7d": 1,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors. | Lazarus",
+     "url": "https://otx.alienvault.com/pulse/6a9db5ef43636929696eac66",
+     "modified": "2026-09-06T18:50:23.858000",
      "last_24h": false
     }
    ]
