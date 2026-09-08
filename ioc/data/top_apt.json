@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-08T10:21:34+00:00",
+ "generated_at": "2026-09-08T18:22:12+00:00",
  "source": "AlienVault OTX pulse search",
  "note": "Activity = threat-intel pulses (campaign reports) mentioning the group in the window. Vendor/community reporting \u2014 follow each link to its source.",
  "actors": [
@@ -12,15 +12,21 @@
    ],
    "sponsor": "North Korea",
    "pulses_24h": 1,
-   "pulses_7d": 3,
+   "pulses_7d": 4,
    "malware": [],
    "targets": [],
    "campaigns": [
     {
      "title": "Kimsuky Uses the AI Agent 'opencode' to Create Decoys as Its GitHub PAT-Based LNK Attacks Evolve",
+     "url": "https://otx.alienvault.com/pulse/6a9ff5d14ec39add3c2490d4",
+     "modified": "2026-09-08T11:47:29.229000",
+     "last_24h": true
+    },
+    {
+     "title": "Kimsuky Uses the AI Agent 'opencode' to Create Decoys as Its GitHub PAT-Based LNK Attacks Evolve",
      "url": "https://otx.alienvault.com/pulse/6a9e70fd7eb74853a795cc57",
      "modified": "2026-09-07T15:41:31.543000",
-     "last_24h": true
+     "last_24h": false
     },
     {
      "title": "Kimsuky",
@@ -90,22 +96,23 @@
    ]
   },
   {
-   "name": "Turla",
+   "name": "Lazarus Group",
    "aka": [
-    "Dragonfly",
-    "CRONY",
-    "Uroburos"
+    "Lazarus",
+    "APT38",
+    "Hidden Cobra",
+    "BlueNoroff"
    ],
-   "sponsor": "Russia",
+   "sponsor": "North Korea",
    "pulses_24h": 0,
    "pulses_7d": 1,
    "malware": [],
    "targets": [],
    "campaigns": [
     {
-     "title": "Turla",
-     "url": "https://otx.alienvault.com/pulse/6a9dd822e0b521d84f4536d1",
-     "modified": "2026-09-06T21:16:18.532000",
+     "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors. | Lazarus",
+     "url": "https://otx.alienvault.com/pulse/6a9db5ef43636929696eac66",
+     "modified": "2026-09-06T18:50:23.858000",
      "last_24h": false
     }
    ]
@@ -132,28 +139,6 @@
    ]
   },
   {
-   "name": "Lazarus Group",
-   "aka": [
-    "Lazarus",
-    "APT38",
-    "Hidden Cobra",
-    "BlueNoroff"
-   ],
-   "sponsor": "North Korea",
-   "pulses_24h": 0,
-   "pulses_7d": 1,
-   "malware": [],
-   "targets": [],
-   "campaigns": [
-    {
-     "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors. | Lazarus",
-     "url": "https://otx.alienvault.com/pulse/6a9db5ef43636929696eac66",
-     "modified": "2026-09-06T18:50:23.858000",
-     "last_24h": false
-    }
-   ]
-  },
-  {
    "name": "APT37",
    "aka": [
     "Reaper",
@@ -170,6 +155,27 @@
      "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors",
      "url": "https://otx.alienvault.com/pulse/6a9af7a5158ae188847551b5",
      "modified": "2026-09-07T10:18:49.336000",
+     "last_24h": false
+    }
+   ]
+  },
+  {
+   "name": "Turla",
+   "aka": [
+    "Dragonfly",
+    "CRONY",
+    "Uroburos"
+   ],
+   "sponsor": "Russia",
+   "pulses_24h": 0,
+   "pulses_7d": 1,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "Turla",
+     "url": "https://otx.alienvault.com/pulse/6a9dd822e0b521d84f4536d1",
+     "modified": "2026-09-06T21:16:18.532000",
      "last_24h": false
     }
    ]
