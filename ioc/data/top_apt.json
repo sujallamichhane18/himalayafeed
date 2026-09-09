@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-08T18:22:12+00:00",
+ "generated_at": "2026-09-09T02:21:11+00:00",
  "source": "AlienVault OTX pulse search",
  "note": "Activity = threat-intel pulses (campaign reports) mentioning the group in the window. Vendor/community reporting \u2014 follow each link to its source.",
  "actors": [
@@ -43,32 +43,6 @@
    ]
   },
   {
-   "name": "Gamaredon",
-   "aka": [
-    "Primitive Bear",
-    "ShallowBurrow"
-   ],
-   "sponsor": "Russia (GRU)",
-   "pulses_24h": 0,
-   "pulses_7d": 2,
-   "malware": [],
-   "targets": [],
-   "campaigns": [
-    {
-     "title": "Gamaredon WinRAR exploitation wave, Dec 2025 - Jun 2026 (Ukraine)",
-     "url": "https://otx.alienvault.com/pulse/6a9d2b755df4bc6aee56e0bc",
-     "modified": "2026-09-06T09:02:39.160000",
-     "last_24h": false
-    },
-    {
-     "title": "Gamaredon",
-     "url": "https://otx.alienvault.com/pulse/6a994fe048ebef77e51310af",
-     "modified": "2026-09-03T10:45:52.024000",
-     "last_24h": false
-    }
-   ]
-  },
-  {
    "name": "MuddyWater",
    "aka": [
     "Mercury",
@@ -96,6 +70,32 @@
    ]
   },
   {
+   "name": "Gamaredon",
+   "aka": [
+    "Primitive Bear",
+    "ShallowBurrow"
+   ],
+   "sponsor": "Russia (GRU)",
+   "pulses_24h": 0,
+   "pulses_7d": 2,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "Gamaredon WinRAR exploitation wave, Dec 2025 - Jun 2026 (Ukraine)",
+     "url": "https://otx.alienvault.com/pulse/6a9d2b755df4bc6aee56e0bc",
+     "modified": "2026-09-06T09:02:39.160000",
+     "last_24h": false
+    },
+    {
+     "title": "Gamaredon",
+     "url": "https://otx.alienvault.com/pulse/6a994fe048ebef77e51310af",
+     "modified": "2026-09-03T10:45:52.024000",
+     "last_24h": false
+    }
+   ]
+  },
+  {
    "name": "Lazarus Group",
    "aka": [
     "Lazarus",
@@ -113,27 +113,6 @@
      "title": "DPRK APTs: Ted backdoor and curlRAT target South Korean media and automotive sectors. | Lazarus",
      "url": "https://otx.alienvault.com/pulse/6a9db5ef43636929696eac66",
      "modified": "2026-09-06T18:50:23.858000",
-     "last_24h": false
-    }
-   ]
-  },
-  {
-   "name": "APT28",
-   "aka": [
-    "Fancy Bear",
-    "Sofacy",
-    "STRONTIUM"
-   ],
-   "sponsor": "Russia (GRU)",
-   "pulses_24h": 0,
-   "pulses_7d": 1,
-   "malware": [],
-   "targets": [],
-   "campaigns": [
-    {
-     "title": "Investigating Midnight Blizzard's AI Powered Infrastructure.",
-     "url": "https://otx.alienvault.com/pulse/6a9b1b352e3dc6b4f370fa6e",
-     "modified": "2026-09-04T19:25:41.967000",
      "last_24h": false
     }
    ]
@@ -176,6 +155,27 @@
      "title": "Turla",
      "url": "https://otx.alienvault.com/pulse/6a9dd822e0b521d84f4536d1",
      "modified": "2026-09-06T21:16:18.532000",
+     "last_24h": false
+    }
+   ]
+  },
+  {
+   "name": "APT28",
+   "aka": [
+    "Fancy Bear",
+    "Sofacy",
+    "STRONTIUM"
+   ],
+   "sponsor": "Russia (GRU)",
+   "pulses_24h": 0,
+   "pulses_7d": 1,
+   "malware": [],
+   "targets": [],
+   "campaigns": [
+    {
+     "title": "Investigating Midnight Blizzard's AI Powered Infrastructure.",
+     "url": "https://otx.alienvault.com/pulse/6a9b1b352e3dc6b4f370fa6e",
+     "modified": "2026-09-04T19:25:41.967000",
      "last_24h": false
     }
    ]
